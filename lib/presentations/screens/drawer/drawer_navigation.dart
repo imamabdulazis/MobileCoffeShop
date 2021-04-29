@@ -148,7 +148,11 @@ class _DrawerNavigationState extends State<DrawerNavigation> {
               color: Colors.teal,
               child: InkWell(
                 onTap: () {
-                  Get.to(HomeScreen());
+                  Get.to(
+                    HomeScreen(),
+                    transition: Transition.downToUp,
+                    duration: Duration(milliseconds: 700),
+                  );
                 },
                 child: Padding(
                   padding: const EdgeInsets.symmetric(

@@ -9,31 +9,60 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  int isActiveIndex = 0;
+
+  void onChangeIndex(int index) {
+    Future.delayed(
+      Duration.zero,
+      () => setState(() {
+        isActiveIndex = index;
+      }),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: _buildHeader(),
-      body: VerticalTabs(
-        tabsWidth: 70,
-        indicatorColor: Colors.teal,
-        contentScrollAxis: Axis.vertical,
-        onSelect: (index) {
-          print(index);
-        },
-        tabs: <Tab>[
-          Tab(child: _buildButtonTab(isActive: false)),
-          Tab(child: _buildButtonTab(isActive: false)),
-          Tab(child: _buildButtonTab(isActive: false)),
-          Tab(child: _buildButtonTab(isActive: false)),
-          Tab(child: _buildButtonTab(isActive: false)),
-        ],
-        contents: <Widget>[
-          Container(child: Text('Flutter'), padding: EdgeInsets.all(20)),
-          Container(child: Text('Dart'), padding: EdgeInsets.all(20)),
-          Container(child: Text('NodeJS'), padding: EdgeInsets.all(20)),
-          Container(child: Text('PHP'), padding: EdgeInsets.all(20)),
-          Container(child: Text('HTML 5'), padding: EdgeInsets.all(20))
-        ],
+      body: Padding(
+        padding: const EdgeInsets.only(top: 15),
+        child: VerticalTabs(
+          tabsWidth: 70,
+          initialIndex: 0,
+          indicatorColor: Colors.transparent,
+          backgroundColor: CupertinoColors.white,
+          selectedTabBackgroundColor: Colors.transparent,
+          contentScrollAxis: Axis.vertical,
+          tabsElevation: 2,
+          onSelect: onChangeIndex,
+          tabs: <Tab>[
+            Tab(child: _buildButtonTab(index: 0)),
+            Tab(child: _buildButtonTab(index: 1)),
+            Tab(child: _buildButtonTab(index: 2)),
+            Tab(child: _buildButtonTab(index: 3)),
+            Tab(child: _buildButtonTab(index: 4)),
+          ],
+          contents: <Widget>[
+            Container(
+              color: Colors.black12,
+              child: ListView.builder(
+                scrollDirection: Axis.vertical,
+                itemCount: 10,
+                itemExtent: 100,
+                itemBuilder: (context, index) {
+                  return Container(
+                    margin: EdgeInsets.all(10),
+                    color: Colors.white30,
+                  );
+                },
+              ),
+            ),
+            Container(child: Text('Dart'), padding: EdgeInsets.all(20)),
+            Container(child: Text('NodeJS'), padding: EdgeInsets.all(20)),
+            Container(child: Text('PHP'), padding: EdgeInsets.all(20)),
+            Container(child: Text('HTML 5'), padding: EdgeInsets.all(20))
+          ],
+        ),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       floatingActionButton: FloatingActionButton.extended(
@@ -74,29 +103,47 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget _buildButtonTab({
-    bool isActive,
-  }) {
+  Widget _buildButtonTab({int index}) {
     return Container(
-      decoration: BoxDecoration(
-          border: Border.all(
-        color: isActive ? Colors.teal : Colors.transparent,
-      )),
+      width: 60,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Icon(
-            CupertinoIcons.heart_fill,
-            size: 25,
-            color: Colors.teal,
-          ),
-          Text(
-            "Favorit",
-            style: TextStyle(
-              fontSize: 14,
-              fontWeight: FontWeight.w700,
+          Container(
+            width: 40,
+            height: 40,
+            padding: const EdgeInsets.all(5),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              border: Border.all(
+                color: isActiveIndex == index ? Colors.teal : Colors.white,
+                width: 3,
+              ),
+              borderRadius: BorderRadius.circular(10),
+              boxShadow: [
+                BoxShadow(
+                  color: CupertinoColors.extraLightBackgroundGray,
+                  spreadRadius: 5,
+                  blurRadius: 7,
+                  offset: Offset(0, 3), // changes position of shadow
+                ),
+              ],
             ),
-          )
+            child: Icon(
+              CupertinoIcons.heart_fill,
+              size: 25,
+              color: Colors.teal,
+            ),
+          ),
+          const SizedBox(height: 5),
+          Text(
+            "${isActiveIndex == index}",
+            style: TextStyle(
+              fontSize: 12,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+          const SizedBox(height: 15),
         ],
       ),
     );
