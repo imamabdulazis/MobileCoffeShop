@@ -1,0 +1,44 @@
+name: caffeshop
+description: A new Flutter project.
+
+publish_to: 'none' 
+
+version: 1.0.0+1
+
+environment:
+  sdk: ">=2.7.0 <3.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  get: ^4.1.4
+  vertical_tabs: ^0.2.0
+
+
+  cupertino_icons: ^1.0.2
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+
+flutter:
+
+  uses-material-design: true
+
+  assets:
+    - assets/img/
+
+  fonts:
+    - family: MaisonNeue
+      fonts:
+      - asset: fonts/MaisonNeue-Thin.ttf
+        weight: 300
+      - asset: fonts/MaisonNeue-Light.ttf
+        weight: 500
+      - asset: fonts/MaisonNeue-Medium.ttf
+        weight: 600
+      - asset: fonts/MaisonNeue-Book.ttf
+        weight: 800
+      - asset: fonts/MaisonNeue-Bold.ttf
+        weight: 900
