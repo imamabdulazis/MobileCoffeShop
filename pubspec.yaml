@@ -12,6 +12,8 @@ dependencies:
   flutter:
     sdk: flutter
   get: ^4.1.4
+  dio: ^4.0.0
+  flutter_bloc: ^7.0.0
   vertical_tabs: ^0.2.0
 
 

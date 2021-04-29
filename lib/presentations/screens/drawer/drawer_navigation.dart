@@ -43,30 +43,41 @@ class _DrawerNavigationState extends State<DrawerNavigation> {
             children: <Widget>[
               DrawerHeader(
                 decoration: BoxDecoration(
-                  color: Colors.teal[300],
+                  color: CupertinoColors.extraLightBackgroundGray,
                 ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Align(
-                      alignment: Alignment.topLeft,
-                      child: CircleAvatar(
-                        minRadius: 30,
-                        child: CircleAvatar(
-                          minRadius: 28,
-                          backgroundColor: Colors.grey,
-                          backgroundImage: NetworkImage(
-                            'https://randomuser.me/api/portraits/women/11.jpg',
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        CircleAvatar(
+                          minRadius: 36,
+                          backgroundColor: Colors.teal,
+                          child: CircleAvatar(
+                            minRadius: 34,
+                            backgroundColor: Colors.grey,
+                            backgroundImage: NetworkImage(
+                              'https://randomuser.me/api/portraits/women/11.jpg',
+                            ),
                           ),
                         ),
-                      ),
+                        const SizedBox.shrink(),
+                      ],
                     ),
+                    const SizedBox(height: 10),
                     Text('IMAM',
                         style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.bold,
                         )),
-                    Text('Lihat Profil'),
+                    const SizedBox(height: 5),
+                    Text('Lihat Profil',
+                        style: TextStyle(
+                          fontSize: 12,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.teal,
+                        )),
                   ],
                 ),
               ),
