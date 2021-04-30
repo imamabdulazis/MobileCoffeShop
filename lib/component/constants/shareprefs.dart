@@ -1,0 +1,3 @@
+class SharePrefs {
+  SharePrefs._();
+}

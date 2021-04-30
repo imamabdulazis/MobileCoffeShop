@@ -13,7 +13,7 @@ class _AppState extends State<App> {
     return GetMaterialApp(
       title: 'CaffeShop',
       theme: ThemeData(
-        primarySwatch: Colors.blue,
+        primarySwatch: Colors.teal,
         scaffoldBackgroundColor: Colors.white,
       ),
       home: DrawerNavigation(),

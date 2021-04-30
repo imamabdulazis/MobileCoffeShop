@@ -1,3 +1,4 @@
+import 'package:caffeshop/presentations/screens/cart/cart_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -79,7 +80,13 @@ class _HomeScreenState extends State<HomeScreen> {
               ],
             ),
             const SizedBox(width: 15),
-            Text("PESAN"),
+            Text(
+              "PESAN",
+              style: TextStyle(
+                  fontSize: 16,
+                  color: Colors.white,
+                  fontWeight: FontWeight.w500),
+            ),
             const SizedBox(width: 5),
             Icon(
               CupertinoIcons.chevron_right_circle,
@@ -197,7 +204,9 @@ class _HomeScreenState extends State<HomeScreen> {
             color: Colors.teal,
             size: 25,
           ),
-          onPressed: () {},
+          onPressed: () {
+            Get.to(CartScreen());
+          },
         )
       ],
     );
