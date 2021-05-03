@@ -12,27 +12,36 @@ part 'login_event.dart';
 part 'login_state.dart';
 
 class LoginBloc extends Bloc<LoginEvent, LoginState> {
-  final ApiProvier apiProvider;
+  final ApiProvier apiProvider = ApiProvier();
   final SharedPreferencesManager prefs = locator<SharedPreferencesManager>();
-  LoginBloc(this.apiProvider) : super(LoginInitial());
+  LoginBloc() : super(LoginInitial());
 
   @override
   Stream<LoginState> mapEventToState(
     LoginEvent event,
   ) async* {
-    // final String tempToken =
-    //     prefs.getString(SharedPreferencesManager.keyAccessToken);
     if (event is OnChangeLogin) {
-      yield LoginLoading();
+      LoginBody loginBody = event.body;
+      if (loginBody.username == null || loginBody.username.isEmpty) {
+        yield LoginException("Email tidak boleh kosong");
+      } else if (loginBody.password == null || loginBody.password.isEmpty) {
+        yield LoginException("Password tidak boleh kosong");
+      } else {
+        yield LoginLoading();
+        LoginModel result = await apiProvider.postLogin(event.body);
 
-      LoginModel result = await apiProvider.postLogin(event.body);
-
-      if (result.error != null) {
-        yield LoginFailure(result.error);
-        return;
+        if (result.error != null) {
+          if (result.status == 422) {
+            print(result.error);
+          } else {
+            print("IMAMAMAM:${result.error}");
+            yield LoginFailure("Terjadi kesalahan");
+            return;
+          }
+        }
+        prefs.putString(SharedPreferencesManager.keyAccessToken, result.token);
+        yield LoginSuccess();
       }
-      prefs.putString(SharedPreferencesManager.keyAccessToken, result.token);
-      yield LoginSuccess();
     }
   }
 }

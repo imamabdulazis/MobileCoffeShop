@@ -4,12 +4,13 @@ part 'login_model.g.dart';
 
 @JsonSerializable()
 class LoginModel {
+  int status;
   String message;
   String previlage;
   String token;
-  String error;
+  dynamic error;
 
-  LoginModel(this.message, this.previlage, this.token);
+  LoginModel(this.message, this.status, this.previlage, this.token);
 
   factory LoginModel.fromJson(Map<String, dynamic> json) =>
       _$LoginModelFromJson(json);

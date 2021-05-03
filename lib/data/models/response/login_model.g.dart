@@ -9,13 +9,15 @@ part of 'login_model.dart';
 LoginModel _$LoginModelFromJson(Map<String, dynamic> json) {
   return LoginModel(
     json['message'] as String,
+    json['status'] as int,
     json['previlage'] as String,
     json['token'] as String,
-  )..error = json['error'] as String;
+  )..error = json['error'];
 }
 
 Map<String, dynamic> _$LoginModelToJson(LoginModel instance) =>
     <String, dynamic>{
+      'status': instance.status,
       'message': instance.message,
       'previlage': instance.previlage,
       'token': instance.token,

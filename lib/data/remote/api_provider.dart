@@ -24,7 +24,7 @@ class ApiProvier {
           await dio.post('/api/v1/login', data: body.toJson());
       return LoginModel.fromJson(response.data);
     } catch (e) {
-      return LoginModel.withError(e.message);
+      return LoginModel.withError(e);
     }
   }
 }
