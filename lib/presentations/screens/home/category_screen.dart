@@ -5,6 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class CategoryScreen extends StatefulWidget {
+  final String namaKategori;
+
+  const CategoryScreen({Key key, this.namaKategori}) : super(key: key);
   @override
   _CategoryScreenState createState() => _CategoryScreenState();
 }
@@ -34,17 +37,16 @@ class _CategoryScreenState extends State<CategoryScreen> {
               ),
             ),
           ),
-          const SizedBox(height: 15),
           Flexible(
             child: GridView.builder(
-              physics: NeverScrollableScrollPhysics(),
               gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 2,
                 mainAxisSpacing: 20,
                 crossAxisSpacing: 10,
                 childAspectRatio: (itemWidth / itemHeight),
               ),
-              itemCount: 7,
+              itemCount: 8,
+              padding: const EdgeInsets.only(bottom:50,top: 15),
               itemBuilder: (BuildContext context, int index) {
                 return Material(
                   child: InkWell(
@@ -71,12 +73,13 @@ class _CategoryScreenState extends State<CategoryScreen> {
                                   right: -2,
                                   child: FavoritButton(
                                     onPress: () {},
-                                    size: 20,
+                                    size: 16,
                                   ),
                                 ),
                               ],
                             ),
                           ),
+                          const SizedBox(height: 10),
                           SizedBox(
                             width: itemWidth,
                             child: Text(

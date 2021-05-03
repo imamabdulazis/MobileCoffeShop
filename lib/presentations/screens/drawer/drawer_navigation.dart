@@ -57,7 +57,7 @@ class _DrawerNavigationState extends State<DrawerNavigation> {
                           backgroundColor: Colors.teal,
                           child: CircleAvatar(
                             minRadius: 34,
-                            backgroundColor: Colors.grey,
+                            backgroundColor: CupertinoColors.extraLightBackgroundGray,
                             backgroundImage: NetworkImage(
                               'https://randomuser.me/api/portraits/women/11.jpg',
                             ),

@@ -39,13 +39,15 @@ class _HomeScreenState extends State<HomeScreen> {
           tabsElevation: 2,
           onSelect: onChangeIndex,
           tabs: <Tab>[
-            Tab(child: _buildButtonTab(index: 0)),
-            Tab(child: _buildButtonTab(index: 1)),
-            Tab(child: _buildButtonTab(index: 2)),
-            Tab(child: _buildButtonTab(index: 3)),
-            Tab(child: _buildButtonTab(index: 4)),
+            Tab(child: _buildButtonTab(index: 0, title: "Expresso")),
+            Tab(child: _buildButtonTab(index: 1, title: "Non Coffe")),
+            Tab(child: _buildButtonTab(index: 2, title: "Flavor")),
+            Tab(child: _buildButtonTab(index: 3, title: "Manual Brew")),
+            Tab(child: _buildButtonTab(index: 4, title: "Traditional")),
+            Tab(child: _buildButtonTab(index: 5, title: "Signature")),
           ],
           contents: <Widget>[
+            CategoryScreen(),
             CategoryScreen(),
             CategoryScreen(),
             CategoryScreen(),
@@ -99,7 +101,7 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget _buildButtonTab({int index}) {
+  Widget _buildButtonTab({int index, String title}) {
     return Container(
       width: 60,
       child: Column(
@@ -133,10 +135,12 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
           const SizedBox(height: 5),
           Text(
-            "${isActiveIndex == index}",
+            title,
+            textAlign: TextAlign.center,
             style: TextStyle(
-              fontSize: 12,
+              fontSize: 10,
               fontWeight: FontWeight.w500,
+              color: Colors.teal,
             ),
           ),
           const SizedBox(height: 15),
@@ -198,16 +202,41 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
           onPressed: () {},
         ),
-        IconButton(
-          icon: Icon(
-            CupertinoIcons.cart,
-            color: Colors.teal,
-            size: 25,
+        Stack(children: [
+          IconButton(
+            icon: Icon(
+              CupertinoIcons.cart,
+              color: Colors.teal,
+              size: 25,
+            ),
+            onPressed: () {
+              Get.to(CartScreen());
+            },
           ),
-          onPressed: () {
-            Get.to(CartScreen());
-          },
-        )
+          Positioned(
+            top: 4,
+            right: 4,
+            child: Material(
+              color: Colors.white,
+              elevation: 2,
+              borderRadius: BorderRadius.circular(50),
+              child: SizedBox(
+                width: 20,
+                height: 20,
+                child: Center(
+                  child: Text(
+                    "0",
+                    style: TextStyle(
+                      fontSize: 15,
+                      fontWeight: FontWeight.w700,
+                      color: Colors.teal,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          )
+        ])
       ],
     );
   }

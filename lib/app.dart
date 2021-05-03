@@ -12,6 +12,7 @@ class _AppState extends State<App> {
   Widget build(BuildContext context) {
     return GetMaterialApp(
       title: 'CaffeShop',
+      debugShowCheckedModeBanner:false,
       theme: ThemeData(
         primarySwatch: Colors.teal,
         scaffoldBackgroundColor: Colors.white,

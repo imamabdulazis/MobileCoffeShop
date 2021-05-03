@@ -26,73 +26,108 @@ class _DetailItemScreenState extends State<DetailItemScreen> {
               onPressed: () {
                 Get.back();
               })),
-      body: Stack(
-        children: [
-          ListView(
-            children: [
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 15),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Hero(
-                      tag: 'detailImage',
-                      child: Image.asset(
-                        'assets/img/starbug.png',
-                        width: size.width,
-                        height: size.width,
-                      ),
+      body: Stack(children: [
+        ListView(
+          children: [
+            Container(
+              padding: const EdgeInsets.fromLTRB(15, 0, 15, 80),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Hero(
+                    tag: 'detailImage',
+                    child: Image.asset(
+                      'assets/img/starbug.png',
+                      width: size.width,
+                      height: size.width,
                     ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          "Bundle",
-                          style: TextStyle(
-                            color: Colors.teal,
-                            fontWeight: FontWeight.w700,
-                            fontSize: 14,
-                          ),
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        "Bundle",
+                        style: TextStyle(
+                          color: Colors.teal,
+                          fontWeight: FontWeight.w700,
+                          fontSize: 14,
                         ),
-                        FavoritButton(
-                          onPress: () {},
-                        )
-                      ],
-                    ),
-                    Text(
-                      "Forecast Drink CUP",
-                      style: TextStyle(
-                        color: Colors.teal,
-                        fontWeight: FontWeight.w600,
-                        fontSize: 25,
                       ),
+                      FavoritButton(
+                        onPress: () {},
+                      )
+                    ],
+                  ),
+                  Text(
+                    "Forecast Drink CUP",
+                    style: TextStyle(
+                      color: Colors.teal,
+                      fontWeight: FontWeight.w600,
+                      fontSize: 25,
                     ),
-                    const SizedBox(height: 10),
-                    Text(
-                      "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, ",
-                      style: TextStyle(
-                        color: Colors.black,
-                        fontWeight: FontWeight.w400,
-                        fontSize: 14,
-                      ),
+                  ),
+                  const SizedBox(height: 10),
+                  Text(
+                    "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, ",
+                    style: TextStyle(
+                      color: Colors.black,
+                      fontWeight: FontWeight.w400,
+                      fontSize: 14,
                     ),
-                    const SizedBox(height: 10),
-                    Text(
-                      "Rp 20.000",
-                      style: TextStyle(
-                        color: Colors.teal,
-                        fontWeight: FontWeight.w600,
-                        fontSize: 20,
-                      ),
+                  ),
+                  const SizedBox(height: 10),
+                  Text(
+                    "Rp 20.000",
+                    style: TextStyle(
+                      color: Colors.teal,
+                      fontWeight: FontWeight.w600,
+                      fontSize: 20,
                     ),
-                  ],
-                ),
+                  ),
+                  const SizedBox(height: 20),
+                  _buildAddButton(),
+                ],
               ),
-            ],
+            ),
+          ],
+        ),
+        _buildButtonBottom(),
+      ]),
+    );
+  }
+
+  Widget _buildAddButton() {
+    return Row(
+      children: [
+        CustomIconButton(
+          isBorder: true,
+          onPress: () {},
+          title: Icon(
+            CupertinoIcons.trash,
+            color: Colors.teal,
+            size: 20,
           ),
-          _buildButtonBottom(),
-        ]
-      ),
+        ),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 10),
+          child: CustomIconButton(
+            isBorder: false,
+            onPress: () {},
+            title: Text(
+              "1",
+              style: TextStyle(
+                fontSize: 20,
+                color: Colors.white,
+              ),
+            ),
+          ),
+        ),
+        CustomIconButton(
+          isBorder: true,
+          onPress: () {},
+          title: Icon(CupertinoIcons.plus, size: 20, color: Colors.teal),
+        ),
+      ],
     );
   }
 
