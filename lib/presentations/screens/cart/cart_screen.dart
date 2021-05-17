@@ -1,9 +1,9 @@
-import 'package:caffeshop/component/common/palette.dart';
-import 'package:caffeshop/component/widget/button/custom_icon_button.dart';
-import 'package:caffeshop/presentations/screens/home/detail_item_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+
+import '../../../component/widget/button/custom_icon_button.dart';
+import '../home/detail_item_screen.dart';
 
 class CartScreen extends StatefulWidget {
   @override

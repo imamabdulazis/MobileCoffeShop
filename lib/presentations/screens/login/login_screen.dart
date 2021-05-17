@@ -1,8 +1,12 @@
+import 'dart:ui';
+
 import 'package:caffeshop/data/models/request/login_body.dart';
 import 'package:caffeshop/presentations/blocs/login/login_bloc.dart';
+import 'package:caffeshop/presentations/screens/register/register_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_feather_icons/flutter_feather_icons.dart';
 import 'package:get/get.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -12,6 +16,7 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
   final LoginBloc loginBloc = LoginBloc();
+
   final TextEditingController usernameController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
   final scaffoldKey = GlobalKey<ScaffoldState>();
@@ -19,7 +24,7 @@ class _LoginScreenState extends State<LoginScreen> {
   bool obscureText = true;
 
   //* show password
-  void showPassword() {
+  void togglePassword() {
     setState(() {
       obscureText ? obscureText = false : obscureText = true;
     });
@@ -30,40 +35,77 @@ class _LoginScreenState extends State<LoginScreen> {
     loginBloc.add(
       OnChangeLogin(
         LoginBody(
-            usernameController.text.trim(), passwordController.text.trim()),
+          username: usernameController.text.trim(),
+          password: passwordController.text.trim(),
+        ),
       ),
     );
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext conRtext) {
     return BlocProvider(
-      create: (context) => LoginBloc(),
+      create: (context) => loginBloc,
       child: BlocListener<LoginBloc, LoginState>(
         listener: (context, state) {
           if (state is LoginException) {
-            Get.snackbar('Gagal', state.title);
+            Get.snackbar(
+              'Gagal',
+              state.title,
+              snackPosition: SnackPosition.BOTTOM,
+              backgroundColor: Colors.red,
+              colorText: Colors.white,
+            );
           }
           if (state is LoginFailure) {
           } else if (state is LoginSuccess) {}
         },
         child: Scaffold(
-          body: Padding(
-            padding: const EdgeInsets.all(15.0),
-            child: Column(
-              children: [
-                Expanded(
-                  child: ListView(
-                    children: [
-                      _buildTextFieldUsername(),
-                      const SizedBox(height: 10),
-                      _buildTextFieldPassword(),
-                      const SizedBox(height: 10),
-                      _buildLoginButton(context),
-                    ],
-                  ),
-                )
-              ],
+          body: Container(
+            decoration: BoxDecoration(
+                image: DecorationImage(
+                    image: AssetImage('assets/img/bg.jpeg'),
+                    fit: BoxFit.cover)),
+            child: BackdropFilter(
+              filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+              child: Container(
+                color: Colors.black.withOpacity(0.5),
+                width: Get.width,
+                height: Get.height,
+                padding: const EdgeInsets.all(15.0),
+                child: Column(
+                  children: [
+                    Expanded(
+                      child: ListView(
+                        children: [
+                          Text(
+                            "LOGIN",
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 24,
+                              color: Colors.white,
+                            ),
+                          ),
+                          const SizedBox(height: 30),
+                          Image.asset(
+                            'assets/img/icon.png',
+                            width: Get.width / 3,
+                            height: Get.width / 3,
+                          ),
+                          const SizedBox(height: 50),
+                          _buildTextFieldUsername(),
+                          const SizedBox(height: 10),
+                          _buildTextFieldPassword(),
+                          const SizedBox(height: 10),
+                          _buildLoginButton(context),
+                          const SizedBox(height: 10),
+                          _buildCreateAccount(context),
+                        ],
+                      ),
+                    )
+                  ],
+                ),
+              ),
             ),
           ),
         ),
@@ -92,7 +134,7 @@ class _LoginScreenState extends State<LoginScreen> {
         disabledBorder: InputBorder.none,
         contentPadding: const EdgeInsets.only(
             top: 8.0, bottom: 8.0, left: 10.0, right: 10.0),
-        hintText: "Username",
+        hintText: "Email",
       ),
     );
   }
@@ -101,11 +143,17 @@ class _LoginScreenState extends State<LoginScreen> {
     return TextFormField(
       controller: passwordController,
       textAlignVertical: TextAlignVertical.center,
+      obscureText: obscureText,
       decoration: new InputDecoration(
         filled: true,
         fillColor: CupertinoColors.extraLightBackgroundGray,
         border: InputBorder.none,
         prefixIcon: Icon(Icons.lock),
+        suffixIcon: IconButton(
+          icon:
+              obscureText ? Icon(FeatherIcons.eye) : Icon(FeatherIcons.eyeOff),
+          onPressed: togglePassword,
+        ),
         focusedBorder: OutlineInputBorder(
           borderSide: new BorderSide(color: Colors.white),
           borderRadius: new BorderRadius.circular(25.7),
@@ -118,7 +166,7 @@ class _LoginScreenState extends State<LoginScreen> {
         disabledBorder: InputBorder.none,
         contentPadding: const EdgeInsets.only(
             top: 8.0, bottom: 8.0, left: 10.0, right: 10.0),
-        hintText: "Username",
+        hintText: "Password",
       ),
     );
   }
@@ -140,6 +188,33 @@ class _LoginScreenState extends State<LoginScreen> {
         "Masuk",
         style: TextStyle(fontSize: 14, color: Colors.white),
       ),
+    );
+  }
+
+  Widget _buildCreateAccount(context) {
+    return ButtonBar(
+      alignment: MainAxisAlignment.center,
+      buttonPadding: EdgeInsets.symmetric(horizontal: 2.5, vertical: 2.0),
+      children: [
+        Text(
+          "Belum punya akun?",
+          style: Theme.of(context)
+              .textTheme
+              .subtitle2
+              .copyWith(color: Colors.white),
+        ),
+        InkWell(
+            onTap: () {
+              Get.to(RegisterScreen());
+            },
+            child: Text(
+              "daftar",
+              style: Theme.of(context)
+                  .textTheme
+                  .subtitle2
+                  .copyWith(color: Colors.white),
+            ))
+      ],
     );
   }
 }

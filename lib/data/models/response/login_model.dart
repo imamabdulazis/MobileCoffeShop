@@ -8,9 +8,15 @@ class LoginModel {
   String message;
   String previlage;
   String token;
+  @JsonKey(ignore: true)
   dynamic error;
 
-  LoginModel(this.message, this.status, this.previlage, this.token);
+  LoginModel({
+    this.message,
+    this.status,
+    this.previlage,
+    this.token,
+  });
 
   factory LoginModel.fromJson(Map<String, dynamic> json) =>
       _$LoginModelFromJson(json);

@@ -1,11 +1,11 @@
 import 'dart:ui';
 
-import 'package:caffeshop/component/widget/custom_drawer/commons/collapsing_navigation_drawer_widget.dart';
-import 'package:caffeshop/presentations/screens/account/account_screen.dart';
-import 'package:caffeshop/presentations/screens/home/home_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+
+import '../account/account_screen.dart';
+import '../home/home_screen.dart';
 
 class DrawerNavigation extends StatefulWidget {
   @override

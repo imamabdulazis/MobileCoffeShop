@@ -6,6 +6,7 @@ import 'package:dio/dio.dart';
 class ApiProvier {
   Dio dio;
 
+  // ignore: non_constant_identifier_names
   ApiProvider() {
     BaseOptions options = BaseOptions(
       baseUrl: 'http://localhost:3000',
@@ -27,4 +28,6 @@ class ApiProvier {
       return LoginModel.withError(e);
     }
   }
+
+  
 }

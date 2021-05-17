@@ -1,24 +1,20 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'login_model.dart';
+part of 'default_model.dart';
 
 // **************************************************************************
 // JsonSerializableGenerator
 // **************************************************************************
 
-LoginModel _$LoginModelFromJson(Map<String, dynamic> json) {
-  return LoginModel(
-    message: json['message'] as String,
+DefaultModel _$DefaultModelFromJson(Map<String, dynamic> json) {
+  return DefaultModel(
     status: json['status'] as int,
-    previlage: json['previlage'] as String,
-    token: json['token'] as String,
+    message: json['message'] as String,
   );
 }
 
-Map<String, dynamic> _$LoginModelToJson(LoginModel instance) =>
+Map<String, dynamic> _$DefaultModelToJson(DefaultModel instance) =>
     <String, dynamic>{
       'status': instance.status,
       'message': instance.message,
-      'previlage': instance.previlage,
-      'token': instance.token,
     };

@@ -11,6 +11,7 @@ void main() {
   runZonedGuarded(() async {
     WidgetsFlutterBinding.ensureInitialized();
     Bloc.observer = MyBlocObserver();
+    // ignore: await_only_futures
     await setupLocator();
     runApp(App());
   }, (e, s) {
