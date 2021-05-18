@@ -1,3 +1,5 @@
+import 'package:caffeshop/data/models/response/category_model.dart';
+import 'package:caffeshop/presentations/blocs/category/category_bloc.dart';
 import 'package:caffeshop/presentations/screens/cart/cart_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -24,80 +26,99 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   @override
+  void initState() {
+    categoryBloc.getCategory();
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: _buildHeader(),
       body: Padding(
-        padding: const EdgeInsets.only(top: 15),
-        child: VerticalTabs(
-          tabsWidth: 70,
-          initialIndex: 0,
-          indicatorColor: Colors.transparent,
-          backgroundColor: CupertinoColors.white,
-          selectedTabBackgroundColor: Colors.transparent,
-          contentScrollAxis: Axis.vertical,
-          tabsElevation: 2,
-          onSelect: onChangeIndex,
-          tabs: <Tab>[
-            Tab(child: _buildButtonTab(index: 0, title: "Expresso")),
-            Tab(child: _buildButtonTab(index: 1, title: "Non Coffe")),
-            Tab(child: _buildButtonTab(index: 2, title: "Flavor")),
-            Tab(child: _buildButtonTab(index: 3, title: "Manual Brew")),
-            Tab(child: _buildButtonTab(index: 4, title: "Traditional")),
-            Tab(child: _buildButtonTab(index: 5, title: "Signature")),
-          ],
-          contents: <Widget>[
-            CategoryScreen(),
-            CategoryScreen(),
-            CategoryScreen(),
-            CategoryScreen(),
-            CategoryScreen(),
-            CategoryScreen(),
-          ],
-        ),
-      ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-      floatingActionButton: FloatingActionButton.extended(
-        backgroundColor: Colors.teal,
-        onPressed: () {},
-        label: Row(
-          children: [
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  "Total 4 item",
-                  style: TextStyle(
-                      fontSize: 12,
-                      color: Colors.white,
-                      fontWeight: FontWeight.w400),
-                ),
-                Text(
-                  "Rp 240.000",
-                  style: TextStyle(
-                      fontSize: 16,
-                      color: Colors.white,
-                      fontWeight: FontWeight.w500),
-                ),
-              ],
-            ),
-            const SizedBox(width: 15),
-            Text(
-              "PESAN",
-              style: TextStyle(
-                  fontSize: 16,
-                  color: Colors.white,
-                  fontWeight: FontWeight.w500),
-            ),
-            const SizedBox(width: 5),
-            Icon(
-              CupertinoIcons.chevron_right_circle,
-              size: 30,
-              color: Colors.white,
-            ),
-          ],
-        ),
-      ),
+          padding: const EdgeInsets.only(top: 15),
+          child: StreamBuilder<CategoryModel>(
+            stream: categoryBloc.subject.stream,
+            builder: (context, snapshot) {
+              print(snapshot);
+              if (snapshot.hasData) {
+                var data = snapshot.data.data;
+                return VerticalTabs(
+                  tabsWidth: 70,
+                  initialIndex: 0,
+                  indicatorColor: Colors.transparent,
+                  backgroundColor: CupertinoColors.white,
+                  selectedTabBackgroundColor: Colors.transparent,
+                  contentScrollAxis: Axis.vertical,
+                  tabsElevation: 2,
+                  onSelect: onChangeIndex,
+                  tabs: data
+                      .asMap()
+                      .map((key, value) => MapEntry(
+                            key,
+                            Tab(
+                              child: _buildButtonTab(
+                                  index: key, title: data[key].name),
+                            ),
+                          ))
+                      .values
+                      .toList(),
+                  contents: List.generate(
+                    data.length,
+                    (index) => CategoryScreen(
+                      namaKategori: data[index].name,
+                      id: data[index].id,
+                    ),
+                  ),
+                );
+              }
+              return Center(
+                child: CircularProgressIndicator(),
+              );
+            },
+          )),
+      // floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+      // floatingActionButton: FloatingActionButton.extended(
+      //   backgroundColor: Colors.teal,
+      //   onPressed: () {},
+      //   label: Row(
+      //     children: [
+      //       Column(
+      //         crossAxisAlignment: CrossAxisAlignment.start,
+      //         children: [
+      //           Text(
+      //             "Total 4 item",
+      //             style: TextStyle(
+      //                 fontSize: 12,
+      //                 color: Colors.white,
+      //                 fontWeight: FontWeight.w400),
+      //           ),
+      //           Text(
+      //             "Rp 240.000",
+      //             style: TextStyle(
+      //                 fontSize: 16,
+      //                 color: Colors.white,
+      //                 fontWeight: FontWeight.w500),
+      //           ),
+      //         ],
+      //       ),
+      //       const SizedBox(width: 15),
+      //       Text(
+      //         "PESAN",
+      //         style: TextStyle(
+      //             fontSize: 16,
+      //             color: Colors.white,
+      //             fontWeight: FontWeight.w500),
+      //       ),
+      //       const SizedBox(width: 5),
+      //       Icon(
+      //         CupertinoIcons.chevron_right_circle,
+      //         size: 30,
+      //         color: Colors.white,
+      //       ),
+      //     ],
+      //   ),
+      // ),
     );
   }
 
@@ -128,7 +149,7 @@ class _HomeScreenState extends State<HomeScreen> {
               ],
             ),
             child: Icon(
-              CupertinoIcons.heart_fill,
+              Icons.local_drink,
               size: 25,
               color: Colors.teal,
             ),

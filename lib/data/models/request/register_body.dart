@@ -1,3 +1,5 @@
+
+
 import 'package:json_annotation/json_annotation.dart';
 
 part 'register_body.g.dart';

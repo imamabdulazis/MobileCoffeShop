@@ -18,10 +18,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   final TextEditingController telpController = TextEditingController();
   final scaffoldKey = GlobalKey<ScaffoldState>();
 
-
-  void onPressedRegister(){}
-
-
+  void onPressedRegister() {}
 
   @override
   Widget build(BuildContext context) {
@@ -42,6 +39,14 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 Expanded(
                   child: ListView(
                     children: [
+                      Text(
+                        "DAFTAR",
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 24,
+                          color: Colors.white,
+                        ),
+                      ),
                       const SizedBox(height: 30),
                       Image.asset(
                         'assets/img/icon.png',

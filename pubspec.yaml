@@ -18,18 +18,18 @@ dependencies:
   vertical_tabs: ^0.2.0
   shared_preferences: ^2.0.5
   logger: ^1.0.0
-  json_annotation: any
+  rxdart: ^0.27.0
+  json_annotation: ^3.1.1
   flutter_feather_icons: ^2.0.0+1
   flutrans: ^0.0.4
-
-
   cupertino_icons: ^1.0.2
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
   build_runner: ^1.11.1
-  json_serializable: any
+  json_serializable: ^3.5.1
+  freezed: any
 
 
 flutter:

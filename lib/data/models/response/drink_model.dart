@@ -1,12 +1,16 @@
+
+
 import 'package:json_annotation/json_annotation.dart';
 
 part 'drink_model.g.dart';
 
 @JsonSerializable(explicitToJson: true, fieldRename: FieldRename.snake)
 class DrinkModel {
-  final int status;
-  final String message;
-  final List<DrinkData> data;
+  int status;
+  String message;
+  List<DrinkData> data;
+  @JsonKey(ignore: true)
+  dynamic error;
 
   DrinkModel({
     this.status,
@@ -18,18 +22,20 @@ class DrinkModel {
       _$DrinkModelFromJson(json);
 
   Map<String, dynamic> toJson() => _$DrinkModelToJson(this);
+
+  DrinkModel.withError(this.error);
 }
 
 @JsonSerializable(explicitToJson: true, fieldRename: FieldRename.snake)
 class DrinkData {
-  final String id;
-  final String name;
-  final String description;
-  final String imageUrl;
-  final String price;
-  final String stock;
-  final DateTime updatedAt;
-  final DrinkCategory category;
+  String id;
+  String name;
+  String description;
+  String imageUrl;
+  String price;
+  String stock;
+  DateTime updatedAt;
+  DrinkCategory category;
 
   DrinkData({
     this.id,
@@ -50,8 +56,8 @@ class DrinkData {
 
 @JsonSerializable(explicitToJson: true, fieldRename: FieldRename.snake)
 class DrinkCategory {
-  final String id;
-  final String name;
+  String id;
+  String name;
 
   DrinkCategory({
     this.id,

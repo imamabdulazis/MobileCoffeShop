@@ -1,7 +1,9 @@
 import 'dart:ui';
 
+import 'package:caffeshop/component/widget/loader/loader_widget.dart';
 import 'package:caffeshop/data/models/request/login_body.dart';
 import 'package:caffeshop/presentations/blocs/login/login_bloc.dart';
+import 'package:caffeshop/presentations/screens/payment/payment_screen.dart';
 import 'package:caffeshop/presentations/screens/register/register_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -58,57 +60,74 @@ class _LoginScreenState extends State<LoginScreen> {
             );
           }
           if (state is LoginFailure) {
-          } else if (state is LoginSuccess) {}
+            Get.snackbar(
+              'Gagal',
+              state.message,
+              snackPosition: SnackPosition.BOTTOM,
+              backgroundColor: Colors.red,
+              colorText: Colors.white,
+            );
+          } else if (state is LoginSuccess) {
+            Get.to(PaymentScreen());
+          }
         },
-        child: Scaffold(
-          body: Container(
-            decoration: BoxDecoration(
-                image: DecorationImage(
-                    image: AssetImage('assets/img/bg.jpeg'),
-                    fit: BoxFit.cover)),
-            child: BackdropFilter(
-              filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
-              child: Container(
-                color: Colors.black.withOpacity(0.5),
-                width: Get.width,
-                height: Get.height,
-                padding: const EdgeInsets.all(15.0),
-                child: Column(
-                  children: [
-                    Expanded(
-                      child: ListView(
-                        children: [
-                          Text(
-                            "LOGIN",
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 24,
-                              color: Colors.white,
+        child: Stack(children: [
+          Scaffold(
+            body: Container(
+              decoration: BoxDecoration(
+                  image: DecorationImage(
+                      image: AssetImage('assets/img/bg.jpeg'),
+                      fit: BoxFit.cover)),
+              child: BackdropFilter(
+                filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+                child: Container(
+                  color: Colors.black.withOpacity(0.5),
+                  width: Get.width,
+                  height: Get.height,
+                  padding: const EdgeInsets.all(15.0),
+                  child: Column(
+                    children: [
+                      Expanded(
+                        child: ListView(
+                          children: [
+                            Text(
+                              "LOGIN",
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 24,
+                                color: Colors.white,
+                              ),
                             ),
-                          ),
-                          const SizedBox(height: 30),
-                          Image.asset(
-                            'assets/img/icon.png',
-                            width: Get.width / 3,
-                            height: Get.width / 3,
-                          ),
-                          const SizedBox(height: 50),
-                          _buildTextFieldUsername(),
-                          const SizedBox(height: 10),
-                          _buildTextFieldPassword(),
-                          const SizedBox(height: 10),
-                          _buildLoginButton(context),
-                          const SizedBox(height: 10),
-                          _buildCreateAccount(context),
-                        ],
-                      ),
-                    )
-                  ],
+                            const SizedBox(height: 30),
+                            Image.asset(
+                              'assets/img/icon.png',
+                              width: Get.width / 3,
+                              height: Get.width / 3,
+                            ),
+                            const SizedBox(height: 50),
+                            _buildTextFieldUsername(),
+                            const SizedBox(height: 10),
+                            _buildTextFieldPassword(),
+                            const SizedBox(height: 10),
+                            _buildLoginButton(context),
+                            const SizedBox(height: 10),
+                            _buildCreateAccount(context),
+                          ],
+                        ),
+                      )
+                    ],
+                  ),
                 ),
               ),
             ),
           ),
-        ),
+          BlocBuilder<LoginBloc, LoginState>(builder: (context, state) {
+            if (state is LoginLoading) {
+              return LoaderWidget(title: "Loading...");
+            }
+            return const SizedBox.shrink();
+          }),
+        ]),
       ),
     );
   }
@@ -134,7 +153,7 @@ class _LoginScreenState extends State<LoginScreen> {
         disabledBorder: InputBorder.none,
         contentPadding: const EdgeInsets.only(
             top: 8.0, bottom: 8.0, left: 10.0, right: 10.0),
-        hintText: "Email",
+        hintText: "Username",
       ),
     );
   }

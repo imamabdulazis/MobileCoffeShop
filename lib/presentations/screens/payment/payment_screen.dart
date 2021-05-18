@@ -12,7 +12,10 @@ class _PaymentScreenState extends State<PaymentScreen> {
 
   @override
   void initState() {
-    flutrans.init("SB-Mid-client-SAKkWSOa7I8kzyCa", "SB-Mid-server-GxIuhd_WKHm_GYoIx99pmUr3");
+    flutrans.init(
+      "SB-Mid-client-SAKkWSOa7I8kzyCa",
+      "SB-Mid-server-GxIuhd_WKHm_GYoIx99pmUr3",
+    );
     flutrans.setFinishCallback(_callback);
     super.initState();
   }

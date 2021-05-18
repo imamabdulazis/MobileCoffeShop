@@ -1,5 +1,7 @@
 import 'dart:ui';
 
+import 'package:caffeshop/component/constants/share_preference.dart';
+import 'package:caffeshop/presentations/screens/login/login_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -14,6 +16,7 @@ class DrawerNavigation extends StatefulWidget {
 
 class _DrawerNavigationState extends State<DrawerNavigation> {
   final _scaffoldKey = GlobalKey<ScaffoldState>();
+  final prefs = SharedPreferencesManager();
 
   @override
   Widget build(BuildContext context) {
@@ -57,7 +60,8 @@ class _DrawerNavigationState extends State<DrawerNavigation> {
                           backgroundColor: Colors.teal,
                           child: CircleAvatar(
                             minRadius: 34,
-                            backgroundColor: CupertinoColors.extraLightBackgroundGray,
+                            backgroundColor:
+                                CupertinoColors.extraLightBackgroundGray,
                             backgroundImage: NetworkImage(
                               'https://randomuser.me/api/portraits/women/11.jpg',
                             ),
@@ -109,7 +113,10 @@ class _DrawerNavigationState extends State<DrawerNavigation> {
               Divider(),
               ListTile(
                 title: _buildTitleMenuDrawer(title: 'Logout'),
-                onTap: () {},
+                onTap: () {
+                  prefs.clearAll();
+                  Get.offAll(LoginScreen());
+                },
               ),
             ],
           ),

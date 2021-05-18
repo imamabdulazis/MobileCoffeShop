@@ -12,7 +12,7 @@ part 'login_event.dart';
 part 'login_state.dart';
 
 class LoginBloc extends Bloc<LoginEvent, LoginState> {
-  final ApiProvier apiProvider = ApiProvier();
+  final ApiProvider apiProvider = ApiProvider();
   final SharedPreferencesManager prefs = locator<SharedPreferencesManager>();
   LoginBloc() : super(LoginInitial());
 
@@ -23,7 +23,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     if (event is OnChangeLogin) {
       LoginBody loginBody = event.body;
       if (loginBody.username == null || loginBody.username.isEmpty) {
-        yield LoginException("Email tidak boleh kosong");
+        yield LoginException("Username tidak boleh kosong");
       } else if (loginBody.password == null || loginBody.password.isEmpty) {
         yield LoginException("Password tidak boleh kosong");
       } else {
@@ -31,16 +31,13 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
         LoginModel result = await apiProvider.postLogin(event.body);
 
         if (result.error != null) {
-          if (result.status == 422) {
-            print(result.error);
-          } else {
-            print("IMAMAMAM:${result.error}");
-            yield LoginFailure("Terjadi kesalahan");
-            return;
-          }
+          yield LoginFailure(result.error);
+          return;
+        } else {
+          prefs.putString(
+              SharedPreferencesManager.keyAccessToken, result.token);
+          yield LoginSuccess();
         }
-        prefs.putString(SharedPreferencesManager.keyAccessToken, result.token);
-        yield LoginSuccess();
       }
     }
   }

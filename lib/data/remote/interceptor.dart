@@ -29,8 +29,8 @@ class LoggingInterceptors extends InterceptorsWrapper {
     print(
         "--> END ${options.method != null ? options.method.toUpperCase() : 'METHOD'}");
 
-    if (options.headers.containsKey('requirestoken')) {
-      options.headers.remove('requirestoken');
+    if (options.headers.containsKey('isToken')) {
+      options.headers.remove('isToken');
       print(
           'accessToken: ${_sharedPreferencesManager.getString(SharedPreferencesManager.keyAccessToken)}');
       String accessToken = _sharedPreferencesManager

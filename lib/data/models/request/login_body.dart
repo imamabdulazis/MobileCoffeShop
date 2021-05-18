@@ -1,11 +1,13 @@
+
+
 import 'package:json_annotation/json_annotation.dart';
 
 part 'login_body.g.dart';
 
 @JsonSerializable()
 class LoginBody {
-  final String username;
-  final String password;
+  String username;
+  String password;
 
   LoginBody({
     this.username,
