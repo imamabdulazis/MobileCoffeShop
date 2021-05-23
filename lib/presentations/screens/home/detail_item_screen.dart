@@ -178,7 +178,7 @@ class _DetailItemScreenState extends State<DetailItemScreen> {
             _buildButton(
               title: "Keranjang",
               onPress: () => {},
-              color: Colors.orange,
+              color: Colors.grey,
             ),
             _buildButton(
               title: "Checkout",
@@ -205,7 +205,7 @@ class _DetailItemScreenState extends State<DetailItemScreen> {
               title,
               style: TextStyle(
                 fontSize: 16,
-                color: Colors.white,
+                color: color == Colors.grey ? Colors.black : Colors.white,
                 fontWeight: FontWeight.bold,
               ),
             ),
