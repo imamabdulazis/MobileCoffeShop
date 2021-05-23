@@ -16,10 +16,24 @@ class DetailItemScreen extends StatefulWidget {
 }
 
 class _DetailItemScreenState extends State<DetailItemScreen> {
+  int amount = 1;
+
   @override
   void initState() {
     super.initState();
     detailDrinkBloc.getDetailDrink(widget.id);
+  }
+
+  void onAddPress() {
+    setState(() {
+      amount += 1;
+    });
+  }
+
+  void onMinPress() {
+    setState(() {
+      amount != 1 ? amount -= 1 : amount = 1;
+    });
   }
 
   @override
@@ -124,7 +138,7 @@ class _DetailItemScreenState extends State<DetailItemScreen> {
       children: [
         CustomIconButton(
           isBorder: true,
-          onPress: () {},
+          onPress: onMinPress,
           title: Icon(
             CupertinoIcons.trash,
             color: Colors.teal,
@@ -137,7 +151,7 @@ class _DetailItemScreenState extends State<DetailItemScreen> {
             isBorder: false,
             onPress: () {},
             title: Text(
-              "1",
+              "$amount",
               style: TextStyle(
                 fontSize: 20,
                 color: Colors.white,
@@ -147,7 +161,7 @@ class _DetailItemScreenState extends State<DetailItemScreen> {
         ),
         CustomIconButton(
           isBorder: true,
-          onPress: () {},
+          onPress: onAddPress,
           title: Icon(CupertinoIcons.plus, size: 20, color: Colors.teal),
         ),
       ],
@@ -175,7 +189,7 @@ class _DetailItemScreenState extends State<DetailItemScreen> {
         ));
   }
 
-  Widget _buildButton({String title, Function onPress,Color color}) {
+  Widget _buildButton({String title, Function onPress, Color color}) {
     return Expanded(
       flex: 2,
       child: Material(
