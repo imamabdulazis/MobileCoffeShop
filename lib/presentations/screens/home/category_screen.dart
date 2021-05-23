@@ -42,119 +42,125 @@ class _CategoryScreenState extends State<CategoryScreen> {
     final double itemHeight = (size.height - kToolbarHeight - 24) / 2;
     final double itemWidth = size.width / 1.5;
 
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 15),
-            child: Text(
-              widget.namaKategori,
-              style: TextStyle(
-                fontSize: 18,
-                color: Colors.teal,
-                fontWeight: FontWeight.w700,
+    return RefreshIndicator(
+      onRefresh: () async {
+        drinkBloc.getDrink(widget.id);
+      },
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 20),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 15),
+              child: Text(
+                widget.namaKategori,
+                style: TextStyle(
+                  fontSize: 18,
+                  color: Colors.teal,
+                  fontWeight: FontWeight.w700,
+                ),
               ),
             ),
-          ),
-          StreamBuilder<DrinkModel>(
-            stream: drinkBloc.subject.stream,
-            builder: (context, snapshot) {
-              if (snapshot.hasData) {
-                var data = snapshot.data.data;
-                if(data.length<=0){
-                  return Expanded(
-                    child: Text("Minuman belum tersedia"),
-                  );
-                }
-                return Flexible(
-                  child: GridView.builder(
-                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 2,
-                      mainAxisSpacing: 20,
-                      crossAxisSpacing: 10,
-                      childAspectRatio: (itemWidth / itemHeight),
-                    ),
-                    itemCount: data.length,
-                    padding: const EdgeInsets.only(bottom: 50, top: 15),
-                    itemBuilder: (BuildContext context, int index) {
-                      return Material(
-                        child: InkWell(
-                          onTap: () {
-                            Get.to(
-                              DetailItemScreen(),
-                            );
-                          },
-                          child: SizedBox(
-                            height: 200,
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Card(
-                                  margin: EdgeInsets.zero,
-                                  color: Colors.white,
-                                  child: Stack(
-                                    children: [
-                                      Image.network(
-                                        data[index].imageUrl,
-                                      ),
-                                      Positioned(
-                                        top: -2,
-                                        right: -2,
-                                        child: FavoritButton(
-                                          onPress: () {},
-                                          size: 16,
+            StreamBuilder<DrinkModel>(
+              stream: drinkBloc.subject.stream,
+              builder: (context, snapshot) {
+                if (snapshot.hasData) {
+                  var data = snapshot.data.data;
+                  if (data.length <= 0) {
+                    return Expanded(
+                      child: Text("Minuman belum tersedia"),
+                    );
+                  }
+                  return Flexible(
+                    child: GridView.builder(
+                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 2,
+                        mainAxisSpacing: 20,
+                        crossAxisSpacing: 10,
+                        childAspectRatio: (itemWidth / itemHeight),
+                      ),
+                      itemCount: data.length,
+                      padding: const EdgeInsets.only(bottom: 50, top: 15),
+                      itemBuilder: (BuildContext context, int index) {
+                        return Material(
+                          child: InkWell(
+                            onTap: () {
+                              Get.to(
+                                DetailItemScreen(),
+                              );
+                            },
+                            child: SizedBox(
+                              height: 200,
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Card(
+                                    margin: EdgeInsets.zero,
+                                    color: Colors.white,
+                                    child: Stack(
+                                      children: [
+                                        Image.network(
+                                          data[index].imageUrl,
+                                          fit: BoxFit.cover,
                                         ),
+                                        Positioned(
+                                          top: -2,
+                                          right: -2,
+                                          child: FavoritButton(
+                                            onPress: () {},
+                                            size: 16,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  const SizedBox(height: 10),
+                                  SizedBox(
+                                    width: itemWidth,
+                                    child: Text(
+                                      data[index].name,
+                                      maxLines: 2,
+                                      overflow: TextOverflow.ellipsis,
+                                      style: TextStyle(
+                                        fontSize: 12,
+                                        color: Colors.black,
+                                        fontWeight: FontWeight.w500,
                                       ),
-                                    ],
-                                  ),
-                                ),
-                                const SizedBox(height: 10),
-                                SizedBox(
-                                  width: itemWidth,
-                                  child: Text(
-                                    data[index].name,
-                                    maxLines: 2,
-                                    overflow: TextOverflow.ellipsis,
-                                    style: TextStyle(
-                                      fontSize: 12,
-                                      color: Colors.black,
-                                      fontWeight: FontWeight.w500,
                                     ),
                                   ),
-                                ),
-                                const SizedBox(height: 10),
-                                SizedBox(
-                                  width: itemWidth,
-                                  child: Text(
-                                    data[index].price,
-                                    maxLines: 2,
-                                    overflow: TextOverflow.ellipsis,
-                                    style: TextStyle(
-                                      fontSize: 12,
-                                      color: Colors.teal,
-                                      fontWeight: FontWeight.w700,
+                                  const SizedBox(height: 10),
+                                  SizedBox(
+                                    width: itemWidth,
+                                    child: Text(
+                                      data[index].price,
+                                      maxLines: 2,
+                                      overflow: TextOverflow.ellipsis,
+                                      style: TextStyle(
+                                        fontSize: 12,
+                                        color: Colors.teal,
+                                        fontWeight: FontWeight.w700,
+                                      ),
                                     ),
                                   ),
-                                ),
-                              ],
+                                ],
+                              ),
                             ),
                           ),
-                        ),
-                      );
-                    },
+                        );
+                      },
+                    ),
+                  );
+                }
+                return Expanded(
+                  child: Center(
+                    child: CircularProgressIndicator(),
                   ),
                 );
-              }
-              return Expanded(
-                child: Center(
-                  child: CircularProgressIndicator(),
-                ),
-              );
-            },
-          )
-        ],
+              },
+            )
+          ],
+        ),
       ),
     );
   }

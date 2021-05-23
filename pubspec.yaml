@@ -12,6 +12,7 @@ dependencies:
   flutter:
     sdk: flutter
   get: ^4.1.4
+  # cached_network_image: ^3.0.0
   dio: ^3.0.10
   flutter_bloc: ^7.0.0
   get_it: ^6.0.0
@@ -23,6 +24,7 @@ dependencies:
   flutter_feather_icons: ^2.0.0+1
   flutrans: ^0.0.4
   cupertino_icons: ^1.0.2
+  firebase_dynamic_links: ^2.0.4
 
 dev_dependencies:
   flutter_test:

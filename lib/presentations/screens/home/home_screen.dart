@@ -40,7 +40,6 @@ class _HomeScreenState extends State<HomeScreen> {
           child: StreamBuilder<CategoryModel>(
             stream: categoryBloc.subject.stream,
             builder: (context, snapshot) {
-              print(snapshot);
               if (snapshot.hasData) {
                 var data = snapshot.data.data;
                 return VerticalTabs(

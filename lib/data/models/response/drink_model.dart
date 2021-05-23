@@ -33,7 +33,7 @@ class DrinkData {
   String description;
   String imageUrl;
   String price;
-  String stock;
+  int stock;
   DateTime updatedAt;
   DrinkCategory category;
 

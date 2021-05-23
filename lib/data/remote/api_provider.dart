@@ -1,9 +1,12 @@
+import 'package:caffeshop/data/models/request/order_body.dart';
 import 'package:caffeshop/data/models/request/register_body.dart';
+import 'package:caffeshop/data/models/response/account_model.dart';
 import 'package:caffeshop/data/models/response/category_model.dart';
 import 'package:caffeshop/data/models/response/default_model.dart';
 import 'package:caffeshop/data/models/response/drink_model.dart';
 import 'package:caffeshop/data/models/response/login_model.dart';
 import 'package:caffeshop/data/models/request/login_body.dart';
+import 'package:caffeshop/data/models/response/order_model.dart';
 import 'package:caffeshop/data/remote/interceptor.dart';
 import 'package:caffeshop/data/remote/network_exceptions.dart';
 import 'package:dio/dio.dart';
@@ -13,7 +16,7 @@ class ApiProvider {
 
   ApiProvider() {
     BaseOptions options = BaseOptions(
-      baseUrl: 'http://192.168.10.19:3000',
+      baseUrl: 'http://192.168.100.7:3000',
       connectTimeout: 15000,
       receiveTimeout: 15000,
       receiveDataWhenStatusError: true,
@@ -68,6 +71,51 @@ class ApiProvider {
     } catch (e) {
       return CategoryModel.withError(
         NetworkExceptions.getErrorMessage(NetworkExceptions.getDioException(e)),
+      );
+    }
+  }
+
+  Future<AccountModel> getAccount(String id) async {
+    try {
+      final Response response = await dio.get('/api/v1/users/$id',
+          options: Options(headers: {'isToken': true}));
+      return AccountModel.fromJson(response.data);
+    } catch (e) {
+      return AccountModel.withError(
+        NetworkExceptions.getErrorMessage(NetworkExceptions.getDioException(e)),
+      );
+    }
+  }
+
+  Future<DefaultModel> postOrder(OrderBody body) async {
+    try {
+      final Response response = await dio.post(
+        '/api/v1/orders',
+        data: body.toJson(),
+        options: Options(headers: {'isToken': true}),
+      );
+      return DefaultModel.fromJson(response.data);
+    } catch (e) {
+      return DefaultModel.withError(
+        NetworkExceptions.getErrorMessage(
+          NetworkExceptions.getDioException(e),
+        ),
+      );
+    }
+  }
+
+  Future<OrderModel> getDetailOrder(String id) async {
+    try {
+      final Response response = await dio.get(
+        '/api/v1/orders/$id',
+        options: Options(headers: {'isToken': true}),
+      );
+      return OrderModel.fromJson(response.data);
+    } catch (e) {
+      return OrderModel.withError(
+        NetworkExceptions.getErrorMessage(
+          NetworkExceptions.getDioException(e),
+        ),
       );
     }
   }

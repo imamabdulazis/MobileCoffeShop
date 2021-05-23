@@ -1,6 +1,8 @@
 import 'dart:ui';
 
 import 'package:caffeshop/component/constants/share_preference.dart';
+import 'package:caffeshop/data/models/response/account_model.dart';
+import 'package:caffeshop/presentations/blocs/account/account_bloc.dart';
 import 'package:caffeshop/presentations/screens/login/login_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -17,6 +19,13 @@ class DrawerNavigation extends StatefulWidget {
 class _DrawerNavigationState extends State<DrawerNavigation> {
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   final prefs = SharedPreferencesManager();
+
+
+  @override
+  void initState() { 
+    super.initState();
+    accountBloc.getAccount(prefs.getString(SharedPreferencesManager.keyIdUser));
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -46,54 +55,65 @@ class _DrawerNavigationState extends State<DrawerNavigation> {
             padding: EdgeInsets.zero,
             children: <Widget>[
               DrawerHeader(
-                decoration: BoxDecoration(
-                  color: CupertinoColors.extraLightBackgroundGray,
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        CircleAvatar(
-                          minRadius: 36,
-                          backgroundColor: Colors.teal,
-                          child: CircleAvatar(
-                            minRadius: 34,
-                            backgroundColor:
-                                CupertinoColors.extraLightBackgroundGray,
-                            backgroundImage: NetworkImage(
-                              'https://randomuser.me/api/portraits/women/11.jpg',
+                  decoration: BoxDecoration(
+                    color: CupertinoColors.extraLightBackgroundGray,
+                  ),
+                  child: StreamBuilder<AccountModel>(
+                    stream: accountBloc.subject.stream,
+                    builder: (context, snapshot) {
+                      if (snapshot.hasData) {
+                        print(snapshot.data.data);
+                        var data=snapshot.data.data;
+                        return Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                CircleAvatar(
+                                  minRadius: 36,
+                                  backgroundColor: Colors.teal,
+                                  child: CircleAvatar(
+                                    minRadius: 34,
+                                    backgroundColor: CupertinoColors
+                                        .extraLightBackgroundGray,
+                                    backgroundImage: NetworkImage(
+                                      data.imageUrl,
+                                    ),
+                                  ),
+                                ),
+                                const SizedBox.shrink(),
+                              ],
                             ),
-                          ),
-                        ),
-                        const SizedBox.shrink(),
-                      ],
-                    ),
-                    const SizedBox(height: 10),
-                    Text('IMAM',
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                        )),
-                    const SizedBox(height: 5),
-                    InkWell(
-                      onTap: () {
-                        Get.to(AccountScreen());
-                      },
-                      child: Padding(
-                        padding: const EdgeInsets.fromLTRB(0, 5, 5, 5),
-                        child: Text('Lihat Profil',
-                            style: TextStyle(
-                              fontSize: 12,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.teal,
-                            )),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
+                            const SizedBox(height: 10),
+                            Text('IMAM',
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                )),
+                            const SizedBox(height: 5),
+                            InkWell(
+                              onTap: () {
+                                Get.to(AccountScreen());
+                              },
+                              child: Padding(
+                                padding: const EdgeInsets.fromLTRB(0, 5, 5, 5),
+                                child: Text('Lihat Profil',
+                                    style: TextStyle(
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.teal,
+                                    )),
+                              ),
+                            ),
+                          ],
+                        );
+                      }
+                      return Center(
+                        child: CircularProgressIndicator(),
+                      );
+                    },
+                  )),
               ListTile(
                 title: _buildTitleMenuDrawer(title: 'Riwayat Pemesanan'),
                 onTap: () {},
@@ -207,14 +227,14 @@ class _DrawerNavigationState extends State<DrawerNavigation> {
             const SizedBox(height: 30),
 
             ///card
-            Container(
-              width: size.width / 1.5,
-              height: 100,
-              decoration: BoxDecoration(
-                color: Colors.white.withOpacity(0.5),
-                borderRadius: BorderRadius.circular(10),
-              ),
-            ),
+            // Container(
+            //   width: size.width / 1.5,
+            //   height: 100,
+            //   decoration: BoxDecoration(
+            //     color: Colors.white.withOpacity(0.5),
+            //     borderRadius: BorderRadius.circular(10),
+            //   ),
+            // ),
           ],
         ),
       ),

@@ -31,7 +31,7 @@ DrinkData _$DrinkDataFromJson(Map<String, dynamic> json) {
     description: json['description'] as String,
     imageUrl: json['image_url'] as String,
     price: json['price'] as String,
-    stock: json['stock'] as String,
+    stock: json['stock'] as int,
     updatedAt: json['updated_at'] == null
         ? null
         : DateTime.parse(json['updated_at'] as String),
