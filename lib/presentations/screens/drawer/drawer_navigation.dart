@@ -4,6 +4,7 @@ import 'package:caffeshop/component/constants/share_preference.dart';
 import 'package:caffeshop/data/models/response/account_model.dart';
 import 'package:caffeshop/presentations/blocs/account/account_bloc.dart';
 import 'package:caffeshop/presentations/screens/login/login_screen.dart';
+import 'package:caffeshop/presentations/screens/riwayat_pesanan/riwayat_pesanan.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -20,9 +21,8 @@ class _DrawerNavigationState extends State<DrawerNavigation> {
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   final prefs = SharedPreferencesManager();
 
-
   @override
-  void initState() { 
+  void initState() {
     super.initState();
     accountBloc.getAccount(prefs.getString(SharedPreferencesManager.keyIdUser));
   }
@@ -63,7 +63,7 @@ class _DrawerNavigationState extends State<DrawerNavigation> {
                     builder: (context, snapshot) {
                       if (snapshot.hasData) {
                         print(snapshot.data.data);
-                        var data=snapshot.data.data;
+                        var data = snapshot.data.data;
                         return Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
@@ -71,10 +71,10 @@ class _DrawerNavigationState extends State<DrawerNavigation> {
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 CircleAvatar(
-                                  minRadius: 36,
+                                  minRadius: 25,
                                   backgroundColor: Colors.teal,
                                   child: CircleAvatar(
-                                    minRadius: 34,
+                                    minRadius: 23,
                                     backgroundColor: CupertinoColors
                                         .extraLightBackgroundGray,
                                     backgroundImage: NetworkImage(
@@ -86,10 +86,15 @@ class _DrawerNavigationState extends State<DrawerNavigation> {
                               ],
                             ),
                             const SizedBox(height: 10),
-                            Text('IMAM',
+                            Text(data.name,
                                 style: TextStyle(
                                   fontSize: 16,
                                   fontWeight: FontWeight.bold,
+                                )),
+                            Text(data.email,
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w600,
                                 )),
                             const SizedBox(height: 5),
                             InkWell(
@@ -116,7 +121,9 @@ class _DrawerNavigationState extends State<DrawerNavigation> {
                   )),
               ListTile(
                 title: _buildTitleMenuDrawer(title: 'Riwayat Pemesanan'),
-                onTap: () {},
+                onTap: () {
+                  Get.to(RiwayatPesanan());
+                },
               ),
               ListTile(
                 title: _buildTitleMenuDrawer(title: 'Pembayaran'),

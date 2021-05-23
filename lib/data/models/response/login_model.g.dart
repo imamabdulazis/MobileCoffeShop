@@ -12,6 +12,7 @@ LoginModel _$LoginModelFromJson(Map<String, dynamic> json) {
     status: json['status'] as int,
     previlage: json['previlage'] as String,
     token: json['token'] as String,
+    userId: json['user_id'] as String,
   );
 }
 
@@ -21,4 +22,5 @@ Map<String, dynamic> _$LoginModelToJson(LoginModel instance) =>
       'message': instance.message,
       'previlage': instance.previlage,
       'token': instance.token,
+      'user_id': instance.userId,
     };

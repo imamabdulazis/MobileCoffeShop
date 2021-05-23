@@ -3,6 +3,7 @@ import 'dart:ui';
 import 'package:caffeshop/component/widget/loader/loader_widget.dart';
 import 'package:caffeshop/data/models/request/login_body.dart';
 import 'package:caffeshop/presentations/blocs/login/login_bloc.dart';
+import 'package:caffeshop/presentations/screens/drawer/drawer_navigation.dart';
 import 'package:caffeshop/presentations/screens/payment/payment_screen.dart';
 import 'package:caffeshop/presentations/screens/register/register_screen.dart';
 import 'package:flutter/cupertino.dart';
@@ -62,13 +63,15 @@ class _LoginScreenState extends State<LoginScreen> {
           if (state is LoginFailure) {
             Get.snackbar(
               'Gagal',
-              state.message,
+              state.message == "Unauthorized request"
+                  ? "Username atau password salah"
+                  : state.message,
               snackPosition: SnackPosition.BOTTOM,
               backgroundColor: Colors.red,
               colorText: Colors.white,
             );
           } else if (state is LoginSuccess) {
-            Get.to(PaymentScreen());
+            Get.to(DrawerNavigation());
           }
         },
         child: Stack(children: [

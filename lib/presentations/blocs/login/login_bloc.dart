@@ -36,6 +36,8 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
         } else {
           prefs.putString(
               SharedPreferencesManager.keyAccessToken, result.token);
+          prefs.putString(
+              SharedPreferencesManager.keyIdUser, result.userId);
           yield LoginSuccess();
         }
       }

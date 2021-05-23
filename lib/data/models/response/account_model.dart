@@ -31,7 +31,7 @@ class DataAccount {
   String email;
   String username;
   String previlage;
-  dynamic telpNumber;
+  String telpNumber;
   String imageUrl;
 
   DataAccount({

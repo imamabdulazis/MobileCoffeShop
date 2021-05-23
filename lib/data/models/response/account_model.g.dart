@@ -30,7 +30,7 @@ DataAccount _$DataAccountFromJson(Map<String, dynamic> json) {
     email: json['email'] as String,
     username: json['username'] as String,
     previlage: json['previlage'] as String,
-    telpNumber: json['telp_number'],
+    telpNumber: json['telp_number'] as String,
     imageUrl: json['image_url'] as String,
   );
 }
