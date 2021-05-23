@@ -9,7 +9,7 @@ class DetailDrinkBloc {
   // ignore: close_sinks
   final _subject = BehaviorSubject<DetailDrinkModel>();
 
-  getDrink(String id) async {
+  getDetailDrink(String id) async {
     _subject.value = null;
     DetailDrinkModel drink = await provider.getDetailDrink(id);
     _subject.sink.add(drink);

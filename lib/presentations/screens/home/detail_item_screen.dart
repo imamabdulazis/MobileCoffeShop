@@ -1,15 +1,27 @@
 import 'package:caffeshop/component/widget/button/custom_icon_button.dart';
 import 'package:caffeshop/component/widget/button/favorite_button.dart';
+import 'package:caffeshop/data/models/response/detail_drink_model.dart';
+import 'package:caffeshop/presentations/blocs/drink/detail_drink_bloc.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class DetailItemScreen extends StatefulWidget {
+  final String id;
+
+  const DetailItemScreen({Key key, this.id}) : super(key: key);
+
   @override
   _DetailItemScreenState createState() => _DetailItemScreenState();
 }
 
 class _DetailItemScreenState extends State<DetailItemScreen> {
+  @override
+  void initState() {
+    super.initState();
+    detailDrinkBloc.getDetailDrink(widget.id);
+  }
+
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
@@ -27,69 +39,80 @@ class _DetailItemScreenState extends State<DetailItemScreen> {
                 Get.back();
               })),
       body: Stack(children: [
-        ListView(
-          children: [
-            Container(
-              padding: const EdgeInsets.fromLTRB(15, 0, 15, 80),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+        StreamBuilder<DetailDrinkModel>(
+          stream: detailDrinkBloc.subject.stream,
+          builder: (context, snapshot) {
+            if (snapshot.hasData) {
+              var data = snapshot.data.data;
+              return ListView(
                 children: [
-                  Hero(
-                    tag: 'detailImage',
-                    child: Image.asset(
-                      'assets/img/starbug.png',
-                      width: size.width,
-                      height: size.width,
-                    ),
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        "Bundle",
-                        style: TextStyle(
-                          color: Colors.teal,
-                          fontWeight: FontWeight.w700,
-                          fontSize: 14,
+                  Container(
+                    padding: const EdgeInsets.fromLTRB(15, 0, 15, 80),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Hero(
+                          tag: 'detailImage',
+                          child: Image.network(
+                            data.imageUrl,
+                            width: size.width,
+                            height: size.width,
+                          ),
                         ),
-                      ),
-                      FavoritButton(
-                        onPress: () {},
-                      )
-                    ],
-                  ),
-                  Text(
-                    "Forecast Drink CUP",
-                    style: TextStyle(
-                      color: Colors.teal,
-                      fontWeight: FontWeight.w600,
-                      fontSize: 25,
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              data.category.name,
+                              style: TextStyle(
+                                color: Colors.blue,
+                                fontWeight: FontWeight.w700,
+                                fontSize: 14,
+                              ),
+                            ),
+                            FavoritButton(
+                              onPress: () {},
+                            )
+                          ],
+                        ),
+                        Text(
+                          data.name,
+                          style: TextStyle(
+                            color: Colors.teal,
+                            fontWeight: FontWeight.w600,
+                            fontSize: 25,
+                          ),
+                        ),
+                        const SizedBox(height: 10),
+                        Text(
+                          data.description,
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontWeight: FontWeight.w400,
+                            fontSize: 14,
+                          ),
+                        ),
+                        const SizedBox(height: 10),
+                        Text(
+                          "Rp ${data.price}",
+                          style: TextStyle(
+                            color: Colors.teal,
+                            fontWeight: FontWeight.w600,
+                            fontSize: 20,
+                          ),
+                        ),
+                        const SizedBox(height: 20),
+                        _buildAddButton(),
+                      ],
                     ),
                   ),
-                  const SizedBox(height: 10),
-                  Text(
-                    "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, ",
-                    style: TextStyle(
-                      color: Colors.black,
-                      fontWeight: FontWeight.w400,
-                      fontSize: 14,
-                    ),
-                  ),
-                  const SizedBox(height: 10),
-                  Text(
-                    "Rp 20.000",
-                    style: TextStyle(
-                      color: Colors.teal,
-                      fontWeight: FontWeight.w600,
-                      fontSize: 20,
-                    ),
-                  ),
-                  const SizedBox(height: 20),
-                  _buildAddButton(),
                 ],
-              ),
-            ),
-          ],
+              );
+            }
+            return Center(
+              child: CircularProgressIndicator(),
+            );
+          },
         ),
         _buildButtonBottom(),
       ]),
@@ -133,11 +156,30 @@ class _DetailItemScreenState extends State<DetailItemScreen> {
 
   Widget _buildButtonBottom() {
     return Positioned(
-      bottom: 0,
-      left: 0,
-      right: 0,
+        bottom: 0,
+        left: 0,
+        right: 0,
+        child: Row(
+          children: [
+            _buildButton(
+              title: "Keranjang",
+              onPress: () => {},
+              color: Colors.orange,
+            ),
+            _buildButton(
+              title: "Checkout",
+              onPress: () => {},
+              color: Colors.teal,
+            )
+          ],
+        ));
+  }
+
+  Widget _buildButton({String title, Function onPress,Color color}) {
+    return Expanded(
+      flex: 2,
       child: Material(
-        color: Colors.teal,
+        color: color,
         child: InkWell(
           onTap: () {},
           child: Padding(
@@ -145,34 +187,13 @@ class _DetailItemScreenState extends State<DetailItemScreen> {
               vertical: 20,
               horizontal: 20,
             ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  "MASUK KERANJANG",
-                  style: TextStyle(
-                    fontSize: 16,
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                Text(
-                  "-",
-                  style: TextStyle(
-                    fontSize: 16,
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                Text(
-                  "Rp 20.000",
-                  style: TextStyle(
-                    fontSize: 16,
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ],
+            child: Text(
+              title,
+              style: TextStyle(
+                fontSize: 16,
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+              ),
             ),
           ),
         ),

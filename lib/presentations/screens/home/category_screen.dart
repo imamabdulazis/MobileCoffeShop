@@ -87,7 +87,9 @@ class _CategoryScreenState extends State<CategoryScreen> {
                           child: InkWell(
                             onTap: () {
                               Get.to(
-                                DetailItemScreen(),
+                                DetailItemScreen(
+                                  id: data[index].id,
+                                ),
                               );
                             },
                             child: SizedBox(
