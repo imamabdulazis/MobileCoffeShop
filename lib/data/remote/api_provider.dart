@@ -1,4 +1,7 @@
 import 'package:caffeshop/component/constants/share_preference.dart';
+import 'package:caffeshop/data/models/request/cart_body.dart';
+import 'package:caffeshop/data/models/request/device_body.dart';
+import 'package:caffeshop/data/models/request/favorite_body.dart';
 import 'package:caffeshop/data/models/request/order_body.dart';
 import 'package:caffeshop/data/models/request/register_body.dart';
 import 'package:caffeshop/data/models/response/account_model.dart';
@@ -11,6 +14,7 @@ import 'package:caffeshop/data/models/response/favorite_model.dart';
 import 'package:caffeshop/data/models/response/login_model.dart';
 import 'package:caffeshop/data/models/request/login_body.dart';
 import 'package:caffeshop/data/models/response/order_model.dart';
+import 'package:caffeshop/data/models/response/payment_model.dart';
 import 'package:caffeshop/data/remote/interceptor.dart';
 import 'package:caffeshop/data/remote/network_exceptions.dart';
 import 'package:dio/dio.dart';
@@ -22,7 +26,7 @@ class ApiProvider {
 
   ApiProvider() {
     BaseOptions options = BaseOptions(
-      baseUrl: 'http://192.168.100.7:3000',
+      baseUrl: 'http://192.168.43.100:3000',
       connectTimeout: 15000,
       receiveTimeout: 15000,
       receiveDataWhenStatusError: true,
@@ -94,6 +98,18 @@ class ApiProvider {
     }
   }
 
+  Future<DefaultModel> postCart(CartBody body) async {
+    try {
+      final Response response = await dio.post('/api/v1/cart',
+          data: body.toJson(), options: Options(headers: {'isToken': true}));
+      return DefaultModel.fromJson(response.data);
+    } catch (e) {
+      return DefaultModel.withError(
+        NetworkExceptions.getErrorMessage(NetworkExceptions.getDioException(e)),
+      );
+    }
+  }
+
   Future<FavoriteModel> getFavorite() async {
     try {
       final Response response = await dio.get(
@@ -102,6 +118,18 @@ class ApiProvider {
       return FavoriteModel.fromJson(response.data);
     } catch (e) {
       return FavoriteModel.withError(
+        NetworkExceptions.getErrorMessage(NetworkExceptions.getDioException(e)),
+      );
+    }
+  }
+
+  Future<DefaultModel> postFavorite(FavoriteBody body) async {
+    try {
+      final Response response = await dio.post('/api/v1/favorite',
+          data: body.toJson(), options: Options(headers: {'isToken': true}));
+      return DefaultModel.fromJson(response.data);
+    } catch (e) {
+      return DefaultModel.withError(
         NetworkExceptions.getErrorMessage(NetworkExceptions.getDioException(e)),
       );
     }
@@ -157,6 +185,38 @@ class ApiProvider {
       return OrderModel.fromJson(response.data);
     } catch (e) {
       return OrderModel.withError(
+        NetworkExceptions.getErrorMessage(
+          NetworkExceptions.getDioException(e),
+        ),
+      );
+    }
+  }
+
+  Future<PaymentGatewayModel> postPaymentGateway(String id) async {
+    try {
+      final Response response = await dio.get(
+        '/api/v1/orders/$id',
+        options: Options(headers: {'isToken': true}),
+      );
+      return PaymentGatewayModel.fromJson(response.data);
+    } catch (e) {
+      return PaymentGatewayModel.withError(
+        NetworkExceptions.getErrorMessage(
+          NetworkExceptions.getDioException(e),
+        ),
+      );
+    }
+  }
+
+  Future<DefaultModel> postDevice(DeviceBody body) async {
+    try {
+      final Response response = await dio.get(
+        '/api/v1/device',
+        options: Options(headers: {'isToken': true}),
+      );
+      return DefaultModel.fromJson(response.data);
+    } catch (e) {
+      return DefaultModel.withError(
         NetworkExceptions.getErrorMessage(
           NetworkExceptions.getDioException(e),
         ),

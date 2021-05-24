@@ -6,10 +6,12 @@ part 'cart_body.g.dart';
 class CartBody {
   String userId;
   String drinkId;
+  int amount;
 
   CartBody({
     this.userId,
     this.drinkId,
+    this.amount,
   });
 
   factory CartBody.fromJson(Map<String, dynamic> json) =>

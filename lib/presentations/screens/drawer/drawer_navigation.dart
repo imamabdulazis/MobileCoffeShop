@@ -3,6 +3,7 @@ import 'dart:ui';
 import 'package:caffeshop/component/constants/share_preference.dart';
 import 'package:caffeshop/data/models/response/account_model.dart';
 import 'package:caffeshop/presentations/blocs/account/account_bloc.dart';
+import 'package:caffeshop/presentations/screens/favorite/favorite_screen.dart';
 import 'package:caffeshop/presentations/screens/login/login_screen.dart';
 import 'package:caffeshop/presentations/screens/riwayat_pesanan/riwayat_pesanan.dart';
 import 'package:flutter/cupertino.dart';
@@ -119,6 +120,12 @@ class _DrawerNavigationState extends State<DrawerNavigation> {
                       );
                     },
                   )),
+              ListTile(
+                title: _buildTitleMenuDrawer(title: 'Favorit'),
+                onTap: () {
+                  Get.to(FavoriteScreen());
+                },
+              ),
               ListTile(
                 title: _buildTitleMenuDrawer(title: 'Riwayat Pemesanan'),
                 onTap: () {

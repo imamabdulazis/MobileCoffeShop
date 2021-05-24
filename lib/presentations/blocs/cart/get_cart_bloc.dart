@@ -10,7 +10,7 @@ class CartBloc {
   // ignore: close_sinks
   final _subject = BehaviorSubject<CartModel>();
 
-  getAccount() async {
+  getCart() async {
     _subject.value = null;
     CartModel cartModel = await provider.getCart();
     _subject.sink.add(cartModel);

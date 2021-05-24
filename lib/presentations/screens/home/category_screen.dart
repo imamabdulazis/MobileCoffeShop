@@ -69,7 +69,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
                   var data = snapshot.data.data;
                   if (data.length <= 0) {
                     return Expanded(
-                      child: Text("Minuman belum tersedia"),
+                      child: Center(child: Text("Minuman belum tersedia")),
                     );
                   }
                   return Flexible(

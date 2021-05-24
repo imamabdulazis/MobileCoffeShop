@@ -8,7 +8,7 @@ class FavoriteBloc {
   // ignore: close_sinks
   final _subject = BehaviorSubject<FavoriteModel>();
 
-  getAccount() async {
+  getFavorite() async {
     _subject.value = null;
     FavoriteModel favoriteModel = await provider.getFavorite();
     _subject.sink.add(favoriteModel);

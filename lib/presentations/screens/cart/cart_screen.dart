@@ -1,3 +1,5 @@
+import 'package:caffeshop/data/models/response/cart_model.dart';
+import 'package:caffeshop/presentations/blocs/cart/get_cart_bloc.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -12,60 +14,97 @@ class CartScreen extends StatefulWidget {
 
 class _CartScreenState extends State<CartScreen> {
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-        appBar: AppBar(
-          iconTheme: IconThemeData(
-            color: Colors.black,
-          ),
-          leading: IconButton(
-              icon: Icon(Icons.close,color: Colors.teal,),
-              onPressed: () {
-                Get.back();
-              }),
-          elevation: 0,
-          title: Text(
-            "Keranjang",
-            style: TextStyle(
-              fontSize: 20,
-              fontWeight: FontWeight.w700,
-              color: Colors.teal,
-            ),
-          ),
-          backgroundColor: Colors.transparent,
-        ),
-        body: ListView(
-          children: [
-            _buildItem(),
-            _buildItem(),
-            _buildItem(),
-            _buildItem(),
-            _buildItem(),
-            _buildItem(),
-            _buildItem(),
-          ],
-        ));
+  void initState() {
+    super.initState();
+    cartBloc.getCart();
   }
 
-  Widget _buildItem() {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        iconTheme: IconThemeData(
+          color: Colors.black,
+        ),
+        leading: IconButton(
+            icon: Icon(
+              Icons.close,
+              color: Colors.teal,
+            ),
+            onPressed: () {
+              Get.back();
+            }),
+        elevation: 0,
+        title: Text(
+          "Keranjang",
+          style: TextStyle(
+            fontSize: 20,
+            fontWeight: FontWeight.w700,
+            color: Colors.teal,
+          ),
+        ),
+        backgroundColor: Colors.transparent,
+      ),
+      body: StreamBuilder<CartModel>(
+        stream: cartBloc.subject.stream,
+        builder: (context, snapshot) {
+          if (snapshot.hasData) {
+            var data = snapshot.data.data;
+            return ListView.builder(itemBuilder: (context, i) {
+              return _buildItem(
+                image: data[i].drink.imageUrl,
+                title: data[i].drink.name,
+                kategori: data[i].drink.category.name,
+                price: data[i].drink.price,
+                amount: data[i].amount,
+              );
+            });
+          }
+          return Center(
+            child: CircularProgressIndicator(),
+          );
+        },
+      ),
+    );
+  }
+
+  Widget _buildItem({
+    String image,
+    String title,
+    String kategori,
+    String price,
+    int amount,
+  }) {
     return Card(
       child: Padding(
         padding: const EdgeInsets.all(10.0),
         child: Column(
           children: [
-            _buildContent(),
-            _buildFooter(),
+            _buildContent(
+              image: image,
+              title: title,
+              kategori: kategori,
+              price: price,
+            ),
+            _buildFooter(
+              amount: amount,
+            ),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildContent() {
+  Widget _buildContent({
+    String image,
+    String title,
+    String kategori,
+    String price,
+  }) {
     return Row(
       children: [
-        Image.asset(
-          'assets/img/starbug2.png',
+        Image.network(
+          image,
           width: 100,
           height: 100,
         ),
@@ -74,7 +113,7 @@ class _CartScreenState extends State<CartScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              "Minuman penyegar",
+              title,
               style: TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.w700,
@@ -84,7 +123,7 @@ class _CartScreenState extends State<CartScreen> {
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 10),
               child: Text(
-                "Ketegori",
+                kategori,
                 style: TextStyle(
                   fontSize: 14,
                   fontWeight: FontWeight.w500,
@@ -93,7 +132,7 @@ class _CartScreenState extends State<CartScreen> {
               ),
             ),
             Text(
-              "Rp 20.0000",
+              price,
               style: TextStyle(
                 fontSize: 14,
                 fontWeight: FontWeight.w600,
@@ -106,7 +145,7 @@ class _CartScreenState extends State<CartScreen> {
     );
   }
 
-  Widget _buildFooter() {
+  Widget _buildFooter({int amount}) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -136,7 +175,7 @@ class _CartScreenState extends State<CartScreen> {
                 isBorder: false,
                 onPress: () {},
                 title: Text(
-                  "1",
+                  "$amount",
                   style: TextStyle(
                     fontSize: 20,
                     color: Colors.white,
@@ -147,11 +186,7 @@ class _CartScreenState extends State<CartScreen> {
             CustomIconButton(
               isBorder: true,
               onPress: () {},
-              title: Icon(
-                CupertinoIcons.plus,
-                size: 20,
-                color: Colors.teal
-              ),
+              title: Icon(CupertinoIcons.plus, size: 20, color: Colors.teal),
             ),
           ],
         )

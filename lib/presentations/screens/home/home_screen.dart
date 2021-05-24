@@ -1,3 +1,4 @@
+import 'package:caffeshop/component/utils/notification.dart';
 import 'package:caffeshop/data/models/response/category_model.dart';
 import 'package:caffeshop/presentations/blocs/category/category_bloc.dart';
 import 'package:caffeshop/presentations/screens/cart/cart_screen.dart';
@@ -14,6 +15,7 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  final NotificationService notificationService = NotificationService();
   int isActiveIndex = 0;
 
   void onChangeIndex(int index) {
@@ -28,6 +30,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     categoryBloc.getCategory();
+    notificationService.initialize();
     super.initState();
   }
 
