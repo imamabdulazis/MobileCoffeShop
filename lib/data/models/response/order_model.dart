@@ -27,33 +27,40 @@ class OrderModel {
 @JsonSerializable(explicitToJson: true, fieldRename: FieldRename.snake)
 class DataOrder {
   String id;
-  String userId;
-  String paymentMethodId;
-  String drinkId;
-  String pickupDate;
-  int amount;
-  int discount;
-  int total;
+  String deeplinkRedirect;
+  String generateQrCode;
+  String getStatus;
   String noTransaction;
-  String status;
-  String paymentStatus;
+  int total;
+  PaymentMethod paymentMethod;
 
   DataOrder({
     this.id,
-    this.userId,
-    this.paymentMethodId,
-    this.drinkId,
-    this.pickupDate,
-    this.amount,
-    this.discount,
-    this.total,
+    this.deeplinkRedirect,
+    this.generateQrCode,
+    this.getStatus,
     this.noTransaction,
-    this.status,
-    this.paymentStatus,
+    this.total,
   });
 
   factory DataOrder.fromJson(Map<String, dynamic> json) =>
       _$DataOrderFromJson(json);
 
   Map<String, dynamic> toJson() => _$DataOrderToJson(this);
+}
+
+@JsonSerializable(explicitToJson: true, fieldRename: FieldRename.snake)
+class PaymentMethod {
+  String id;
+  String paymentType;
+
+  PaymentMethod({
+    this.id,
+    this.paymentType,
+  });
+
+  factory PaymentMethod.fromJson(Map<String, dynamic> json) =>
+      _$PaymentMethodFromJson(json);
+
+  Map<String, dynamic> toJson() => _$PaymentMethodToJson(this);
 }

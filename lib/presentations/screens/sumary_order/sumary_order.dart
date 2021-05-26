@@ -1,5 +1,9 @@
+import 'package:caffeshop/component/constants/share_preference.dart';
+import 'package:caffeshop/data/models/request/order_body.dart';
+import 'package:caffeshop/presentations/screens/payment/payment_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 
 var f = NumberFormat('#,##0.00', 'id_ID');
@@ -27,6 +31,7 @@ class SumaryOrder extends StatefulWidget {
 
 class _SumaryOrderState extends State<SumaryOrder> {
   bool isLoading = true;
+  final prefs = SharedPreferencesManager();
 
   @override
   void initState() {
@@ -249,7 +254,21 @@ class _SumaryOrderState extends State<SumaryOrder> {
                 ],
               ),
               ElevatedButton(
-                onPressed: () {},
+                onPressed: () {
+                  Get.to(PaymentScreen(
+                    orderBody: OrderBody(
+                      amount: widget.qty,
+                      discount: 0,
+                      drinkId: widget.drinkId,
+                      orderStatus: "Pending",
+                      paymentMethodId: "-",
+                      total: widget.price * widget.qty + 4000,
+                      paymentStatus: "Pending",
+                      userId:
+                          prefs.getString(SharedPreferencesManager.keyIdUser),
+                    ),
+                  ));
+                },
                 child: Text(
                   "Pilih pembayaran",
                   style: TextStyle(

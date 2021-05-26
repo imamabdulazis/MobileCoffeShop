@@ -7,20 +7,22 @@ class OrderBody {
   String userId;
   String paymentMethodId;
   String drinkId;
-  String pickupDate;
   int amount;
   int discount;
   int total;
-  String status;
+  String paymentStatus;
+  String orderStatus;
 
   OrderBody({
     this.userId,
     this.paymentMethodId,
     this.drinkId,
-    this.pickupDate,
+    this.orderStatus,
+    this.paymentStatus,
     this.amount,
+    this.discount,
     this.total,
-    this.status,
+
   });
 
   factory OrderBody.fromJson(Map<String, dynamic> json) =>

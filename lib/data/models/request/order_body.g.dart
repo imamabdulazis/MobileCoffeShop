@@ -11,20 +11,21 @@ OrderBody _$OrderBodyFromJson(Map<String, dynamic> json) {
     userId: json['user_id'] as String,
     paymentMethodId: json['payment_method_id'] as String,
     drinkId: json['drink_id'] as String,
-    pickupDate: json['pickup_date'] as String,
+    orderStatus: json['order_status'] as String,
+    paymentStatus: json['payment_status'] as String,
     amount: json['amount'] as int,
+    discount: json['discount'] as int,
     total: json['total'] as int,
-    status: json['status'] as String,
-  )..discount = json['discount'] as int;
+  );
 }
 
 Map<String, dynamic> _$OrderBodyToJson(OrderBody instance) => <String, dynamic>{
       'user_id': instance.userId,
       'payment_method_id': instance.paymentMethodId,
       'drink_id': instance.drinkId,
-      'pickup_date': instance.pickupDate,
       'amount': instance.amount,
       'discount': instance.discount,
       'total': instance.total,
-      'status': instance.status,
+      'payment_status': instance.paymentStatus,
+      'order_status': instance.orderStatus,
     };

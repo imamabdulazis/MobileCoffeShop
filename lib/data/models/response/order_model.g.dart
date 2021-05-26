@@ -26,29 +26,35 @@ Map<String, dynamic> _$OrderModelToJson(OrderModel instance) =>
 DataOrder _$DataOrderFromJson(Map<String, dynamic> json) {
   return DataOrder(
     id: json['id'] as String,
-    userId: json['user_id'] as String,
-    paymentMethodId: json['payment_method_id'] as String,
-    drinkId: json['drink_id'] as String,
-    pickupDate: json['pickup_date'] as String,
-    amount: json['amount'] as int,
-    discount: json['discount'] as int,
-    total: json['total'] as int,
+    deeplinkRedirect: json['deeplink_redirect'] as String,
+    generateQrCode: json['generate_qr_code'] as String,
+    getStatus: json['get_status'] as String,
     noTransaction: json['no_transaction'] as String,
-    status: json['status'] as String,
-    paymentStatus: json['payment_status'] as String,
-  );
+    total: json['total'] as int,
+  )..paymentMethod = json['payment_method'] == null
+      ? null
+      : PaymentMethod.fromJson(json['payment_method'] as Map<String, dynamic>);
 }
 
 Map<String, dynamic> _$DataOrderToJson(DataOrder instance) => <String, dynamic>{
       'id': instance.id,
-      'user_id': instance.userId,
-      'payment_method_id': instance.paymentMethodId,
-      'drink_id': instance.drinkId,
-      'pickup_date': instance.pickupDate,
-      'amount': instance.amount,
-      'discount': instance.discount,
-      'total': instance.total,
+      'deeplink_redirect': instance.deeplinkRedirect,
+      'generate_qr_code': instance.generateQrCode,
+      'get_status': instance.getStatus,
       'no_transaction': instance.noTransaction,
-      'status': instance.status,
-      'payment_status': instance.paymentStatus,
+      'total': instance.total,
+      'payment_method': instance.paymentMethod?.toJson(),
+    };
+
+PaymentMethod _$PaymentMethodFromJson(Map<String, dynamic> json) {
+  return PaymentMethod(
+    id: json['id'] as String,
+    paymentType: json['payment_type'] as String,
+  );
+}
+
+Map<String, dynamic> _$PaymentMethodToJson(PaymentMethod instance) =>
+    <String, dynamic>{
+      'id': instance.id,
+      'payment_type': instance.paymentType,
     };

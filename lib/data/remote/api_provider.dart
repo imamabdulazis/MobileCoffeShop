@@ -14,7 +14,9 @@ import 'package:caffeshop/data/models/response/drink_model.dart';
 import 'package:caffeshop/data/models/response/favorite_model.dart';
 import 'package:caffeshop/data/models/response/login_model.dart';
 import 'package:caffeshop/data/models/request/login_body.dart';
+import 'package:caffeshop/data/models/response/order_list_model.dart';
 import 'package:caffeshop/data/models/response/order_model.dart';
+import 'package:caffeshop/data/models/response/payment_list_model.dart';
 import 'package:caffeshop/data/models/response/payment_model.dart';
 import 'package:caffeshop/data/remote/interceptor.dart';
 import 'package:caffeshop/data/remote/network_exceptions.dart';
@@ -206,16 +208,16 @@ class ApiProvider {
     }
   }
 
-  Future<DefaultModel> postOrder(OrderBody body) async {
+  Future<OrderModel> postOrder(OrderBody body) async {
     try {
       final Response response = await dio.post(
         '/api/v1/orders',
         data: body.toJson(),
         options: Options(headers: {'isToken': true}),
       );
-      return DefaultModel.fromJson(response.data);
+      return OrderModel.fromJson(response.data);
     } catch (e) {
-      return DefaultModel.withError(
+      return OrderModel.withError(
         NetworkExceptions.getErrorMessage(
           NetworkExceptions.getDioException(e),
         ),
@@ -232,6 +234,22 @@ class ApiProvider {
       return OrderModel.fromJson(response.data);
     } catch (e) {
       return OrderModel.withError(
+        NetworkExceptions.getErrorMessage(
+          NetworkExceptions.getDioException(e),
+        ),
+      );
+    }
+  }
+
+  Future<OrderListModel> getListOrder() async {
+    try {
+      final Response response = await dio.get(
+        '/api/v1/orders/user/${prefs.getString(SharedPreferencesManager.keyIdUser)}',
+        options: Options(headers: {'isToken': true}),
+      );
+      return OrderListModel.fromJson(response.data);
+    } catch (e) {
+      return OrderListModel.withError(
         NetworkExceptions.getErrorMessage(
           NetworkExceptions.getDioException(e),
         ),
@@ -264,6 +282,22 @@ class ApiProvider {
       return DefaultModel.fromJson(response.data);
     } catch (e) {
       return DefaultModel.withError(
+        NetworkExceptions.getErrorMessage(
+          NetworkExceptions.getDioException(e),
+        ),
+      );
+    }
+  }
+
+  Future<PeymentMethodList> getListPayment() async {
+    try {
+      final Response response = await dio.get(
+        '/api/v1/payment_method',
+        options: Options(headers: {'isToken': true}),
+      );
+      return PeymentMethodList.fromJson(response.data);
+    } catch (e) {
+      return PeymentMethodList.withError(
         NetworkExceptions.getErrorMessage(
           NetworkExceptions.getDioException(e),
         ),
