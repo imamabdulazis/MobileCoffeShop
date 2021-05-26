@@ -1,6 +1,7 @@
 import 'dart:ui';
 
 import 'package:caffeshop/component/constants/share_preference.dart';
+import 'package:caffeshop/component/utils/notification.dart';
 import 'package:caffeshop/data/models/response/account_model.dart';
 import 'package:caffeshop/presentations/blocs/account/account_bloc.dart';
 import 'package:caffeshop/presentations/screens/favorite/favorite_screen.dart';
@@ -20,12 +21,14 @@ class DrawerNavigation extends StatefulWidget {
 
 class _DrawerNavigationState extends State<DrawerNavigation> {
   final _scaffoldKey = GlobalKey<ScaffoldState>();
+  final NotificationService notificationService = NotificationService();
   final prefs = SharedPreferencesManager();
 
   @override
   void initState() {
     super.initState();
     accountBloc.getAccount(prefs.getString(SharedPreferencesManager.keyIdUser));
+    notificationService.initialize();
   }
 
   @override

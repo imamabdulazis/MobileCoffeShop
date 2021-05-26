@@ -45,6 +45,11 @@ class _HomeScreenState extends State<HomeScreen> {
             builder: (context, snapshot) {
               if (snapshot.hasData) {
                 var data = snapshot.data.data;
+                if (data.length <= 0) {
+                  return Expanded(
+                    child: Center(child: Text("Kategori masih kosong atau Terjadi kesalahan server")),
+                  );
+                }
                 return VerticalTabs(
                   tabsWidth: 70,
                   initialIndex: 0,

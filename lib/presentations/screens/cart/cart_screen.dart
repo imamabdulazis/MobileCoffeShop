@@ -1,7 +1,10 @@
+import 'package:caffeshop/component/widget/loader/loader_widget.dart';
 import 'package:caffeshop/data/models/response/cart_model.dart';
+import 'package:caffeshop/presentations/blocs/cart/delete_cart_bloc.dart';
 import 'package:caffeshop/presentations/blocs/cart/get_cart_bloc.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
 
 import '../../../component/widget/button/custom_icon_button.dart';
@@ -13,6 +16,7 @@ class CartScreen extends StatefulWidget {
 }
 
 class _CartScreenState extends State<CartScreen> {
+  final DeleteCartBloc deleteCartBloc = DeleteCartBloc();
   @override
   void initState() {
     super.initState();
@@ -21,49 +25,83 @@ class _CartScreenState extends State<CartScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        iconTheme: IconThemeData(
-          color: Colors.black,
-        ),
-        leading: IconButton(
-            icon: Icon(
-              Icons.close,
-              color: Colors.teal,
-            ),
-            onPressed: () {
-              Get.back();
-            }),
-        elevation: 0,
-        title: Text(
-          "Keranjang",
-          style: TextStyle(
-            fontSize: 20,
-            fontWeight: FontWeight.w700,
-            color: Colors.teal,
-          ),
-        ),
-        backgroundColor: Colors.transparent,
-      ),
-      body: StreamBuilder<CartModel>(
-        stream: cartBloc.subject.stream,
-        builder: (context, snapshot) {
-          if (snapshot.hasData) {
-            var data = snapshot.data.data;
-            return ListView.builder(itemBuilder: (context, i) {
-              return _buildItem(
-                image: data[i].drink.imageUrl,
-                title: data[i].drink.name,
-                kategori: data[i].drink.category.name,
-                price: data[i].drink.price,
-                amount: data[i].amount,
-              );
-            });
+    return BlocProvider(
+      create: (context) => deleteCartBloc,
+      child: BlocListener<DeleteCartBloc, DeleteCartState>(
+        listener: (context, state) {
+          if (state is DeleteCartFailure) {
+            Get.snackbar(
+              'Gagal',
+              state.message,
+              snackPosition: SnackPosition.BOTTOM,
+              backgroundColor: Colors.red,
+              colorText: Colors.white,
+            );
+          } else if (state is DeleteCartSuccess) {
+            cartBloc.getCart();
+            Get.snackbar(
+              'Berhasil',
+              "Berhasil hapus item dari keranjang",
+              snackPosition: SnackPosition.BOTTOM,
+              backgroundColor: Colors.green,
+              colorText: Colors.white,
+            );
           }
-          return Center(
-            child: CircularProgressIndicator(),
-          );
         },
+        child: Scaffold(
+          appBar: AppBar(
+            iconTheme: IconThemeData(
+              color: Colors.black,
+            ),
+            leading: IconButton(
+                icon: Icon(
+                  Icons.close,
+                  color: Colors.teal,
+                ),
+                onPressed: () {
+                  Get.back();
+                }),
+            elevation: 0,
+            title: Text(
+              "Keranjang",
+              style: TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.w700,
+                color: Colors.teal,
+              ),
+            ),
+            backgroundColor: Colors.transparent,
+          ),
+          body: Stack(children: [
+            StreamBuilder<CartModel>(
+              stream: cartBloc.subject.stream,
+              builder: (context, snapshot) {
+                if (snapshot.hasData) {
+                  var data = snapshot.data.data;
+                  return ListView.builder(itemBuilder: (context, i) {
+                    return _buildItem(
+                      image: data[i].drink.imageUrl,
+                      title: data[i].drink.name,
+                      kategori: data[i].drink.category.name,
+                      price: data[i].drink.price,
+                      amount: data[i].amount,
+                    );
+                  });
+                }
+                return Center(
+                  child: CircularProgressIndicator(),
+                );
+              },
+            ),
+            BlocBuilder<DeleteCartBloc, DeleteCartState>(
+                builder: (context, state) {
+              if (state is DeleteCartFailure) {
+                return LoaderWidget(title: "Hapus dari keranjang");
+              }
+              return const SizedBox.shrink();
+            }),
+          ]),
+        ),
       ),
     );
   }

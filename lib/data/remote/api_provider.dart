@@ -26,7 +26,7 @@ class ApiProvider {
 
   ApiProvider() {
     BaseOptions options = BaseOptions(
-      baseUrl: 'http://192.168.43.100:3000',
+      baseUrl: 'http://192.168.100.7:3000',
       connectTimeout: 15000,
       receiveTimeout: 15000,
       receiveDataWhenStatusError: true,
@@ -110,6 +110,18 @@ class ApiProvider {
     }
   }
 
+  Future<DefaultModel> deleteCart(String id) async {
+    try {
+      final Response response = await dio.delete('/api/v1/cart/$id',
+          options: Options(headers: {'isToken': true}));
+      return DefaultModel.fromJson(response.data);
+    } catch (e) {
+      return DefaultModel.withError(
+        NetworkExceptions.getErrorMessage(NetworkExceptions.getDioException(e)),
+      );
+    }
+  }
+
   Future<FavoriteModel> getFavorite() async {
     try {
       final Response response = await dio.get(
@@ -127,6 +139,18 @@ class ApiProvider {
     try {
       final Response response = await dio.post('/api/v1/favorite',
           data: body.toJson(), options: Options(headers: {'isToken': true}));
+      return DefaultModel.fromJson(response.data);
+    } catch (e) {
+      return DefaultModel.withError(
+        NetworkExceptions.getErrorMessage(NetworkExceptions.getDioException(e)),
+      );
+    }
+  }
+
+  Future<DefaultModel> deleteFavorite(String id) async {
+    try {
+      final Response response = await dio.delete('/api/v1/favorite/$id',
+          options: Options(headers: {'isToken': true}));
       return DefaultModel.fromJson(response.data);
     } catch (e) {
       return DefaultModel.withError(
