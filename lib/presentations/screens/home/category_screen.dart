@@ -10,7 +10,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+var f = NumberFormat('#,##0.00', 'id_ID');
 
 class CategoryScreen extends StatefulWidget {
   final String id;
@@ -52,6 +55,8 @@ class _CategoryScreenState extends State<CategoryScreen> {
 
   @override
   Widget build(BuildContext context) {
+    f.maximumFractionDigits = 0;
+
     var size = MediaQuery.of(context).size;
 
     /*24 is for notification bar on Android*/
@@ -179,11 +184,11 @@ class _CategoryScreenState extends State<CategoryScreen> {
                                         SizedBox(
                                           width: itemWidth,
                                           child: Text(
-                                            data[index].price,
+                                            "Rp ${f.format(int.parse(data[index].price))}",
                                             maxLines: 2,
                                             overflow: TextOverflow.ellipsis,
                                             style: TextStyle(
-                                              fontSize: 12,
+                                              fontSize: 14,
                                               color: Colors.teal,
                                               fontWeight: FontWeight.w700,
                                             ),

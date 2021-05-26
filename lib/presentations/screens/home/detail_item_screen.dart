@@ -10,11 +10,15 @@ import 'package:caffeshop/presentations/blocs/cart/cart_bloc.dart';
 import 'package:caffeshop/presentations/blocs/cart/update_cart_bloc.dart';
 import 'package:caffeshop/presentations/blocs/drink/detail_drink_bloc.dart';
 import 'package:caffeshop/presentations/blocs/favorite/favorite_bloc.dart';
+import 'package:caffeshop/presentations/screens/sumary_order/sumary_order.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_feather_icons/flutter_feather_icons.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
+
+var f = NumberFormat('#,##0.00', 'id_ID');
 
 class DetailItemScreen extends StatefulWidget {
   final String id;
@@ -90,6 +94,8 @@ class _DetailItemScreenState extends State<DetailItemScreen> {
 
   @override
   Widget build(BuildContext context) {
+    f.maximumFractionDigits = 0;
+
     final size = MediaQuery.of(context).size;
     return MultiBlocProvider(
       providers: [
@@ -189,78 +195,91 @@ class _DetailItemScreenState extends State<DetailItemScreen> {
                 builder: (context, snapshot) {
                   if (snapshot.hasData) {
                     var data = snapshot.data.data;
-                    return ListView(
-                      children: [
-                        Container(
-                          padding: const EdgeInsets.fromLTRB(15, 0, 15, 80),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Hero(
-                                tag: 'detailImage',
-                                child: Image.network(
-                                  data.imageUrl,
-                                  width: size.width,
-                                  height: size.width,
+                    return Stack(children: [
+                      ListView(
+                        children: [
+                          Container(
+                            padding: const EdgeInsets.fromLTRB(15, 0, 15, 80),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Hero(
+                                  tag: 'detailImage',
+                                  child: Image.network(
+                                    data.imageUrl,
+                                    width: size.width,
+                                    height: size.width,
+                                  ),
                                 ),
-                              ),
-                              Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Text(
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text(
+                                      data.name,
+                                      style: TextStyle(
+                                        color: Colors.teal,
+                                        fontWeight: FontWeight.w600,
+                                        fontSize: 25,
+                                      ),
+                                    ),
+                                    FavoritButton(
+                                      onPress: addFavorite,
+                                    )
+                                  ],
+                                ),
+                                Container(
+                                  color: Colors.blue,
+                                  padding: const EdgeInsets.all(5),
+                                  child: Text(
                                     data.category.name,
                                     style: TextStyle(
-                                      color: Colors.blue,
+                                      color: Colors.white,
                                       fontWeight: FontWeight.w700,
                                       fontSize: 14,
                                     ),
                                   ),
-                                  FavoritButton(
-                                    onPress: addFavorite,
-                                  )
-                                ],
-                              ),
-                              Text(
-                                data.name,
-                                style: TextStyle(
-                                  color: Colors.teal,
-                                  fontWeight: FontWeight.w600,
-                                  fontSize: 25,
                                 ),
-                              ),
-                              const SizedBox(height: 10),
-                              Text(
-                                data.description,
-                                style: TextStyle(
-                                  color: Colors.black,
-                                  fontWeight: FontWeight.w400,
-                                  fontSize: 14,
+                                const SizedBox(height: 10),
+                                Text(
+                                  data.description,
+                                  style: TextStyle(
+                                    color: Colors.black,
+                                    fontWeight: FontWeight.w400,
+                                    fontSize: 14,
+                                  ),
                                 ),
-                              ),
-                              const SizedBox(height: 10),
-                              Text(
-                                "Rp ${data.price}",
-                                style: TextStyle(
-                                  color: Colors.teal,
-                                  fontWeight: FontWeight.w600,
-                                  fontSize: 20,
+                                const SizedBox(height: 10),
+                                Text(
+                                  "Rp ${f.format(int.parse(data.price))}",
+                                  style: TextStyle(
+                                    color: Colors.teal,
+                                    fontWeight: FontWeight.w600,
+                                    fontSize: 20,
+                                  ),
                                 ),
-                              ),
-                              const SizedBox(height: 20),
-                              _buildAddButton(),
-                            ],
+                                const SizedBox(height: 20),
+                                _buildAddButton(),
+                              ],
+                            ),
                           ),
-                        ),
-                      ],
-                    );
+                        ],
+                      ),
+                      _buildButtonBottom(
+                        amount: amount,
+                        idDrink: data.id,
+                        name: data.name,
+                        categoryName: data.category.name,
+                        imageUrl: data.imageUrl,
+                        price: data.price,
+                      ),
+                    ]);
                   }
                   return Center(
                     child: CircularProgressIndicator(),
                   );
                 },
               ),
-              _buildButtonBottom(),
               BlocBuilder<FavoriteBloc, FavoriteState>(
                   builder: (context, state) {
                 if (state is FavoriteLoading) {
@@ -323,7 +342,14 @@ class _DetailItemScreenState extends State<DetailItemScreen> {
     );
   }
 
-  Widget _buildButtonBottom() {
+  Widget _buildButtonBottom({
+    int amount,
+    String idDrink,
+    String name,
+    String categoryName,
+    String imageUrl,
+    String price,
+  }) {
     return Positioned(
         bottom: 0,
         left: 0,
@@ -337,7 +363,16 @@ class _DetailItemScreenState extends State<DetailItemScreen> {
             ),
             _buildButton(
               title: "Checkout",
-              onPress: () => {},
+              onPress: () {
+                Get.to(SumaryOrder(
+                  drinkId: idDrink,
+                  name: name,
+                  categoryName: categoryName,
+                  imageUrl: imageUrl,
+                  qty: amount,
+                  price: int.parse(price),
+                ));
+              },
               color: Colors.teal,
             )
           ],

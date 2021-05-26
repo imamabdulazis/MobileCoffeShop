@@ -2,13 +2,18 @@ import 'package:caffeshop/component/widget/loader/loader_widget.dart';
 import 'package:caffeshop/data/models/response/cart_model.dart';
 import 'package:caffeshop/presentations/blocs/cart/delete_cart_bloc.dart';
 import 'package:caffeshop/presentations/blocs/cart/get_cart_bloc.dart';
+import 'package:caffeshop/presentations/screens/sumary_order/sumary_order.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 
 import '../../../component/widget/button/custom_icon_button.dart';
 import '../home/detail_item_screen.dart';
+
+
+ var f = NumberFormat('#,##0.00', 'id_ID');
 
 class CartScreen extends StatefulWidget {
   @override
@@ -25,6 +30,9 @@ class _CartScreenState extends State<CartScreen> {
 
   @override
   Widget build(BuildContext context) {
+
+   
+    f.maximumFractionDigits = 0;
     return BlocProvider(
       create: (context) => deleteCartBloc,
       child: BlocListener<DeleteCartBloc, DeleteCartState>(
@@ -142,6 +150,10 @@ class _CartScreenState extends State<CartScreen> {
               id: id,
               idDrink: idDrink,
               amount: amount,
+              categoryName:kategori,
+              imageUrl: image,
+              price:  price,
+              name: title,
             ),
           ],
         ),
@@ -155,6 +167,8 @@ class _CartScreenState extends State<CartScreen> {
     String kategori,
     String price,
   }) {
+
+     f.maximumFractionDigits = 0;
     return Row(
       children: [
         Image.network(
@@ -186,7 +200,7 @@ class _CartScreenState extends State<CartScreen> {
               ),
             ),
             Text(
-              price,
+              "Rp ${f.format(int.parse(price))}",
               style: TextStyle(
                 fontSize: 14,
                 fontWeight: FontWeight.w600,
@@ -203,6 +217,10 @@ class _CartScreenState extends State<CartScreen> {
     int amount,
     String id,
     String idDrink,
+    String name,
+    String categoryName,
+    String imageUrl,
+    String price,
   }) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -215,9 +233,26 @@ class _CartScreenState extends State<CartScreen> {
               amount: amount,
             ));
           },
-          icon: Icon(Icons.edit),
+          icon: Icon(Icons.edit,size: 20),
           label: Text(
             "Edit",
+          ),
+        ),
+
+        OutlinedButton.icon(
+          onPressed: () {
+            Get.to(SumaryOrder(
+              drinkId: idDrink,
+              name: name,
+              categoryName: categoryName,
+              imageUrl: imageUrl,
+              qty: amount,
+              price: int.parse(price),
+            ));
+          },
+          icon: Icon(Icons.payment,size:20),
+          label: Text(
+            "Checkout",
           ),
         ),
         Row(

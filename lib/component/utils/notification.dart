@@ -49,7 +49,7 @@ class NotificationService {
       AndroidNotificationDetails(
           "coffeshop_channel", "channel_name", "channel_description",
           importance: Importance.max,
-          priority: Priority.high,
+          priority: Priority.max,
           ticker: 'ticker',
           enableLights: true,
           channelShowBadge: true,

@@ -217,7 +217,7 @@ class _DrawerNavigationState extends State<DrawerNavigation> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              "Selamat Siang",
+              "Selamat Datang,",
               style: TextStyle(
                 fontSize: 25,
                 color: Colors.teal,
@@ -225,7 +225,7 @@ class _DrawerNavigationState extends State<DrawerNavigation> {
               ),
             ),
             Text(
-              "COFFE IMAM",
+              "Copsychus Coffe",
               style: TextStyle(
                 fontSize: 25,
                 color: Colors.teal,
@@ -234,7 +234,7 @@ class _DrawerNavigationState extends State<DrawerNavigation> {
             ),
             const SizedBox(height: 20),
             Text(
-              "Santai sejenak dengan rasa\n terbaru ice gula merah kurma",
+              "Santai sejenak dengan rasa\n terbaru Dear Marie",
               style: TextStyle(
                 fontWeight: FontWeight.w600,
                 fontSize: 15,
