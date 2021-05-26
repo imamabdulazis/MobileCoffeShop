@@ -59,7 +59,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
                 Get.snackbar(
                   'Gagal',
                   state.message == "Error due to a conflict"
-                      ? "Mohon maaf stock belum tersedia"
+                      ? "Mohon maaf stok belum tersedia"
                       : "Gagal membuat pesanan",
                   snackPosition: SnackPosition.BOTTOM,
                   backgroundColor: Colors.red,

@@ -228,17 +228,29 @@ class _DetailItemScreenState extends State<DetailItemScreen> {
                                     )
                                   ],
                                 ),
-                                Container(
-                                  color: Colors.blue,
-                                  padding: const EdgeInsets.all(5),
-                                  child: Text(
-                                    data.category.name,
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.w700,
-                                      fontSize: 14,
+                                Row(
+                                  children: [
+                                    Container(
+                                      color: Colors.blue,
+                                      padding: const EdgeInsets.all(5),
+                                      child: Text(
+                                        data.category.name,
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.w700,
+                                          fontSize: 14,
+                                        ),
+                                      ),
                                     ),
-                                  ),
+                                    const SizedBox(width: 10),
+                                    Text(
+                                      "Stock : ${data.stock}",
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.w600,
+                                        color: Colors.grey,
+                                      ),
+                                    ),
+                                  ],
                                 ),
                                 const SizedBox(height: 10),
                                 Text(
