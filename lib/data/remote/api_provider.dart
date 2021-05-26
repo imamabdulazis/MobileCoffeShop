@@ -2,6 +2,7 @@ import 'package:caffeshop/component/constants/share_preference.dart';
 import 'package:caffeshop/data/models/request/cart_body.dart';
 import 'package:caffeshop/data/models/request/device_body.dart';
 import 'package:caffeshop/data/models/request/favorite_body.dart';
+import 'package:caffeshop/data/models/request/gopay_body.dart';
 import 'package:caffeshop/data/models/request/order_body.dart';
 import 'package:caffeshop/data/models/request/register_body.dart';
 import 'package:caffeshop/data/models/request/update_cart_body.dart';
@@ -12,12 +13,14 @@ import 'package:caffeshop/data/models/response/default_model.dart';
 import 'package:caffeshop/data/models/response/detail_drink_model.dart';
 import 'package:caffeshop/data/models/response/drink_model.dart';
 import 'package:caffeshop/data/models/response/favorite_model.dart';
+import 'package:caffeshop/data/models/response/gopay_model.dart';
 import 'package:caffeshop/data/models/response/login_model.dart';
 import 'package:caffeshop/data/models/request/login_body.dart';
 import 'package:caffeshop/data/models/response/order_list_model.dart';
 import 'package:caffeshop/data/models/response/order_model.dart';
 import 'package:caffeshop/data/models/response/payment_list_model.dart';
 import 'package:caffeshop/data/models/response/payment_model.dart';
+import 'package:caffeshop/data/models/response/transaction_status.dart';
 import 'package:caffeshop/data/remote/interceptor.dart';
 import 'package:caffeshop/data/remote/network_exceptions.dart';
 import 'package:dio/dio.dart';
@@ -275,8 +278,9 @@ class ApiProvider {
 
   Future<DefaultModel> postDevice(DeviceBody body) async {
     try {
-      final Response response = await dio.get(
+      final Response response = await dio.post(
         '/api/v1/device',
+        data: body.toJson(),
         options: Options(headers: {'isToken': true}),
       );
       return DefaultModel.fromJson(response.data);
@@ -298,6 +302,39 @@ class ApiProvider {
       return PeymentMethodList.fromJson(response.data);
     } catch (e) {
       return PeymentMethodList.withError(
+        NetworkExceptions.getErrorMessage(
+          NetworkExceptions.getDioException(e),
+        ),
+      );
+    }
+  }
+
+  Future<GopayModel> gopayPeyment(GopayBody body) async {
+    try {
+      final Response response = await dio.post(
+        '/api/v1/payment/gopay',
+        data: body.toJson(),
+        options: Options(headers: {'isToken': true}),
+      );
+      return GopayModel.fromJson(response.data);
+    } catch (e) {
+      return GopayModel.withError(
+        NetworkExceptions.getErrorMessage(
+          NetworkExceptions.getDioException(e),
+        ),
+      );
+    }
+  }
+
+  Future<TransactionStatusModel> statusPeyment(String id) async {
+    try {
+      final Response response = await dio.get(
+        '/api/v1/payment/gopay/$id',
+        options: Options(headers: {'isToken': true}),
+      );
+      return TransactionStatusModel.fromJson(response.data);
+    } catch (e) {
+      return TransactionStatusModel.withError(
         NetworkExceptions.getErrorMessage(
           NetworkExceptions.getDioException(e),
         ),

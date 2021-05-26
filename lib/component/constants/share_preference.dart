@@ -6,14 +6,8 @@ class SharedPreferencesManager {
 
   //? save data
   static const String keyAccessToken = 'accessToken';
-  static const String keyLoggedStatus = "isLoggedIn";
-  static const String keyAccessType = "accessType";
-  static const String keyTeacherStatus = "accessTeacher";
   static const String keyIdUser = "idUser";
-  static const String keyIdStudent = "idStudent";
-  static const String keyIdTeacher = "idTeacher";
-  static const String keyIdPhone = "imei";
-  static const String keyIdClassroom = "idClassroom";
+  static const String keyFirebaseCoffeShop = "keyFirebase";
 
   //NOTE : setting notification
   static const String keySoundPersonal = "keySoundPersonal";

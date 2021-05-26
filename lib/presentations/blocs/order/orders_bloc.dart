@@ -21,12 +21,13 @@ class OrdersBloc extends Bloc<OrdersEvent, OrdersState> {
     if (event is OnOrdersEvent) {
       yield OrdersLoading();
       OrderModel model = await apiProvider.postOrder(event.orderBody);
-
+      print("ERROR_ORDER :${model.message}");
       if (model.error != null) {
         yield OrdersFailure(model.error);
         return;
       } else {
         yield OrdersSuccess(model);
+        return;
       }
     }
   }

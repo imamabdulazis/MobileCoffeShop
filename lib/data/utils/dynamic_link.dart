@@ -1,8 +1,11 @@
+import 'package:caffeshop/data/remote/api_provider.dart';
+import 'package:caffeshop/presentations/screens/drawer/drawer_navigation.dart';
 import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class DynamicLinkService {
-
+  final ApiProvider apiProvider = ApiProvider();
   Future handleDynamicLinks() async {
     // 1. Get the initial dynamic link if the app is opened with a dynamic link
     final PendingDynamicLinkData data =
@@ -27,23 +30,26 @@ class DynamicLinkService {
     if (deepLink != null) {
       print('_handleDeepLink | deeplink: $deepLink');
 
-      // var isPay = deepLink.pathSegments.contains('pay');
-      // if (isPay) {
-      //   final queryParams = deepLink.queryParameters["uuid"];
-      //   if (queryParams.length > 0) {
-      //     String uuid = queryParams;
-      //     navigationService.replaceUntilTo(RouteName.Main);
-      //   }
-      // }
+      var isHome = deepLink.pathSegments.contains('home');
+      if (isHome) {
+        var orderId = deepLink.queryParameters['orderId'];
+
+        if (orderId != null) {
+          print("ORDER_ID:$orderId");
+          apiProvider.statusPeyment(orderId);
+          Get.offNamedUntil(
+              DrawerNavigation.route, (Route<dynamic> route) => false);
+        }
+      }
     }
   }
 
-  Future<Uri> createDynamicLinkHome() async {
+  Future<Uri> createDynamicLinkHome(String id) async {
     final DynamicLinkParameters parameters = DynamicLinkParameters(
       // This should match firebase but without the username query param
       uriPrefix: 'https://copsychus.page.link',
       // This can be whatever you want for the uri, https://yourapp.com/groupinvite?username=$userName
-      link: Uri.parse('https://copsychus.page.link/home'),
+      link: Uri.parse('https://copsychus.page.link/home?orderId=$id'),
       androidParameters: AndroidParameters(
         packageName: 'com.example.caffeshop',
       ),

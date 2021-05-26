@@ -16,6 +16,7 @@ OrderBody _$OrderBodyFromJson(Map<String, dynamic> json) {
     amount: json['amount'] as int,
     discount: json['discount'] as int,
     total: json['total'] as int,
+    callbackUrl: json['callback_url'] as String,
   );
 }
 
@@ -28,4 +29,5 @@ Map<String, dynamic> _$OrderBodyToJson(OrderBody instance) => <String, dynamic>{
       'total': instance.total,
       'payment_status': instance.paymentStatus,
       'order_status': instance.orderStatus,
+      'callback_url': instance.callbackUrl,
     };

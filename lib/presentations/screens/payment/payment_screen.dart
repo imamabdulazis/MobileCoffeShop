@@ -1,6 +1,7 @@
 import 'package:caffeshop/component/widget/loader/loader_widget.dart';
 import 'package:caffeshop/data/models/request/order_body.dart';
 import 'package:caffeshop/data/models/response/payment_list_model.dart';
+import 'package:caffeshop/data/utils/dynamic_link.dart';
 import 'package:caffeshop/presentations/blocs/order/orders_bloc.dart';
 import 'package:caffeshop/presentations/blocs/payment/get_payment.dart';
 import 'package:caffeshop/presentations/screens/payment_vendor/gopay_screen.dart';
@@ -18,13 +19,15 @@ class PaymentScreen extends StatefulWidget {
 
 class _PaymentScreenState extends State<PaymentScreen> {
   final OrdersBloc ordersBloc = OrdersBloc();
+
+  final DynamicLinkService dynamicLinkService = DynamicLinkService();
   @override
   void initState() {
     super.initState();
     getPaymentBloc.getPayment();
   }
 
-  void orderGopay(String paymentId) {
+  void orderGopay(String paymentId) async {
     ordersBloc.add(OnOrdersEvent(OrderBody(
       paymentMethodId: paymentId,
       amount: widget.orderBody.amount,
@@ -55,7 +58,9 @@ class _PaymentScreenState extends State<PaymentScreen> {
               if (state is OrdersFailure) {
                 Get.snackbar(
                   'Gagal',
-                  "Gagal membuat pesanan",
+                  state.message == "Error due to a conflict"
+                      ? "Mohon maaf stock belum tersedia"
+                      : "Gagal membuat pesanan",
                   snackPosition: SnackPosition.BOTTOM,
                   backgroundColor: Colors.red,
                   colorText: Colors.white,
@@ -68,13 +73,13 @@ class _PaymentScreenState extends State<PaymentScreen> {
                   backgroundColor: Colors.green,
                   colorText: Colors.white,
                 );
-                Future.delayed(Duration(milliseconds: 1500), () {
-                  Get.to(GojekPayScreen(
-                    uuid: widget.orderBody.drinkId,
-                    number: "423432432",
-                    total: widget.orderBody.total.toString(),
-                  ));
-                });
+                // Future.delayed(Duration(milliseconds: 1500), () {
+                Get.to(GojekPayScreen(
+                  uuid: state.orderModel.data.id,
+                  number: state.orderModel.data.noTransaction,
+                  total: state.orderModel.data.total.toString(),
+                ));
+                // });
               }
             })
           ],
@@ -95,11 +100,9 @@ class _PaymentScreenState extends State<PaymentScreen> {
                   if (snapshot.hasData) {
                     var data = snapshot.data.data;
                     if (data.length <= 0) {
-                      return Expanded(
-                        child: Center(
-                            child: Text(
-                                "Terjadi kesalahan, mohon di refresh kembali")),
-                      );
+                      return Center(
+                          child: Text(
+                              "Terjadi kesalahan, mohon di refresh kembali"));
                     }
                     return ListView.builder(
                         itemCount: data.length,
@@ -142,10 +145,8 @@ class _PaymentScreenState extends State<PaymentScreen> {
                           );
                         });
                   }
-                  return Expanded(
-                    child: Center(
-                      child: CircularProgressIndicator(),
-                    ),
+                  return Center(
+                    child: CircularProgressIndicator(),
                   );
                 },
               ),

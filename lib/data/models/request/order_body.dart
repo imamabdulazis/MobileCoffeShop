@@ -12,6 +12,7 @@ class OrderBody {
   int total;
   String paymentStatus;
   String orderStatus;
+  String callbackUrl;
 
   OrderBody({
     this.userId,
@@ -22,7 +23,7 @@ class OrderBody {
     this.amount,
     this.discount,
     this.total,
-
+    this.callbackUrl,
   });
 
   factory OrderBody.fromJson(Map<String, dynamic> json) =>

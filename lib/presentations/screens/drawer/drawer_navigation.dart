@@ -1,196 +1,273 @@
+import 'dart:io';
 import 'dart:ui';
 
 import 'package:caffeshop/component/constants/share_preference.dart';
 import 'package:caffeshop/component/utils/notification.dart';
+import 'package:caffeshop/data/models/request/device_body.dart';
 import 'package:caffeshop/data/models/response/account_model.dart';
+import 'package:caffeshop/data/utils/device_info.dart';
 import 'package:caffeshop/presentations/blocs/account/account_bloc.dart';
+import 'package:caffeshop/presentations/blocs/device/device_bloc.dart';
 import 'package:caffeshop/presentations/screens/favorite/favorite_screen.dart';
 import 'package:caffeshop/presentations/screens/login/login_screen.dart';
 import 'package:caffeshop/presentations/screens/riwayat_pesanan/riwayat_pesanan.dart';
+import 'package:device_info/device_info.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart' hide Transition;
 import 'package:get/get.dart';
 
 import '../account/account_screen.dart';
 import '../home/home_screen.dart';
 
 class DrawerNavigation extends StatefulWidget {
+  static const route = "DrawerNavigation";
   @override
   _DrawerNavigationState createState() => _DrawerNavigationState();
 }
 
 class _DrawerNavigationState extends State<DrawerNavigation> {
+  static final DeviceInfoPlugin deviceInfoPlugin = DeviceInfoPlugin();
   final _scaffoldKey = GlobalKey<ScaffoldState>();
-  final NotificationService notificationService = NotificationService();
   final prefs = SharedPreferencesManager();
+  final DeviceBloc deviceBloc = DeviceBloc();
 
   @override
   void initState() {
     super.initState();
     accountBloc.getAccount(prefs.getString(SharedPreferencesManager.keyIdUser));
-    notificationService.initialize();
+    initPlatformState();
+  }
+
+  Future<void> initPlatformState() async {
+    var firebaseToken =
+        prefs.getString(SharedPreferencesManager.keyFirebaseCoffeShop);
+    try {
+      if (firebaseToken != null) {
+        print("Register token from local.");
+        registerDevice(firebaseToken);
+      } else {
+        print("Register token from firebase.");
+        FirebaseMessaging.instance.getToken().then((value) {
+          prefs.putString(SharedPreferencesManager.keyFirebaseCoffeShop, value);
+          registerDevice(value);
+        });
+      }
+    } on PlatformException {
+      print('Error : Failed to get platform version.');
+    }
+    if (!mounted) return;
+  }
+
+  void registerDevice(String token) async {
+    var deviceData;
+    if (Platform.isAndroid) {
+      deviceData = MyDeviceInfo.readAndroidBuildData(
+        await deviceInfoPlugin.androidInfo,
+      );
+    } else {
+      deviceData = MyDeviceInfo.readIosDeviceInfo(
+        await deviceInfoPlugin.iosInfo,
+      );
+    }
+    deviceBloc.add(OnDeviceEvent(DeviceBody(
+      userId: prefs.getString(SharedPreferencesManager.keyIdUser),
+      phoneId:
+          deviceData['phone_id'] == '' ? "Not found" : deviceData['phone_id'],
+      fcmToken: token,
+      manufacture: deviceData['manufacturer'] == ''
+          ? "Not found"
+          : deviceData['manufacturer'],
+      systemVersion: deviceData['system_version'] == ''
+          ? "Not found"
+          : deviceData['system_version'],
+      systemOs:
+          deviceData['system_os'] == '' ? "Not found" : deviceData['system_os'],
+      osName: deviceData['os_name'] == '' ? "Not found" : deviceData['os_name'],
+      appVersion: deviceData['apk_version'] == ''
+          ? "Not found"
+          : deviceData['apk_version'],
+    )));
+    print('token firebase: $token');
   }
 
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
-    return Scaffold(
-      key: _scaffoldKey,
-      appBar: AppBar(
-        elevation: 0.0,
-        backgroundColor: Colors.white,
-        title: Text(
-          "Collapsing Navigation Drawer/Sidebar",
-        ),
-        leading: IconButton(
-          color: Colors.teal,
-          icon: Icon(
-            CupertinoIcons.text_alignright,
-            color: Colors.black,
-            size: 25,
+    return BlocProvider(
+      create: (context) => deviceBloc,
+      child: BlocListener<DeviceBloc, DeviceState>(
+        listener: (context, state) {
+          if (state is DeviceFailure) {
+            print("GAGAL REGISTER");
+            print(state.message);
+          } else if (state is DeviceSuccess) {
+            print("BERHASIL REGISTER");
+          }
+        },
+        child: Scaffold(
+          key: _scaffoldKey,
+          appBar: AppBar(
+            elevation: 0.0,
+            backgroundColor: Colors.white,
+            title: Text(
+              "Collapsing Navigation Drawer/Sidebar",
+            ),
+            leading: IconButton(
+              color: Colors.teal,
+              icon: Icon(
+                CupertinoIcons.text_alignright,
+                color: Colors.black,
+                size: 25,
+              ),
+              onPressed: () => _scaffoldKey.currentState.openDrawer(),
+            ),
           ),
-          onPressed: () => _scaffoldKey.currentState.openDrawer(),
-        ),
-      ),
-      drawer: Container(
-        width: size.width / 1.5,
-        child: Drawer(
-          child: ListView(
-            padding: EdgeInsets.zero,
-            children: <Widget>[
-              DrawerHeader(
-                  decoration: BoxDecoration(
-                    color: CupertinoColors.extraLightBackgroundGray,
-                  ),
-                  child: StreamBuilder<AccountModel>(
-                    stream: accountBloc.subject.stream,
-                    builder: (context, snapshot) {
-                      if (snapshot.hasData) {
-                        print(snapshot.data.data);
-                        var data = snapshot.data.data;
-                        return Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          drawer: Container(
+            width: size.width / 1.5,
+            child: Drawer(
+              child: ListView(
+                padding: EdgeInsets.zero,
+                children: <Widget>[
+                  DrawerHeader(
+                      decoration: BoxDecoration(
+                        color: CupertinoColors.extraLightBackgroundGray,
+                      ),
+                      child: StreamBuilder<AccountModel>(
+                        stream: accountBloc.subject.stream,
+                        builder: (context, snapshot) {
+                          if (snapshot.hasData) {
+                            print(snapshot.data.data);
+                            var data = snapshot.data.data;
+                            return Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                CircleAvatar(
-                                  minRadius: 25,
-                                  backgroundColor: Colors.teal,
-                                  child: CircleAvatar(
-                                    minRadius: 23,
-                                    backgroundColor: CupertinoColors
-                                        .extraLightBackgroundGray,
-                                    backgroundImage: NetworkImage(
-                                      data.imageUrl,
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    CircleAvatar(
+                                      minRadius: 25,
+                                      backgroundColor: Colors.teal,
+                                      child: CircleAvatar(
+                                        minRadius: 23,
+                                        backgroundColor: CupertinoColors
+                                            .extraLightBackgroundGray,
+                                        backgroundImage: NetworkImage(
+                                          data.imageUrl,
+                                        ),
+                                      ),
                                     ),
+                                    const SizedBox.shrink(),
+                                  ],
+                                ),
+                                const SizedBox(height: 10),
+                                Text(data.name,
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold,
+                                    )),
+                                Text(data.email,
+                                    style: TextStyle(
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w600,
+                                    )),
+                                const SizedBox(height: 5),
+                                InkWell(
+                                  onTap: () {
+                                    Get.to(AccountScreen());
+                                  },
+                                  child: Padding(
+                                    padding:
+                                        const EdgeInsets.fromLTRB(0, 5, 5, 5),
+                                    child: Text('Lihat Profil',
+                                        style: TextStyle(
+                                          fontSize: 12,
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.teal,
+                                        )),
                                   ),
                                 ),
-                                const SizedBox.shrink(),
                               ],
-                            ),
-                            const SizedBox(height: 10),
-                            Text(data.name,
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.bold,
-                                )),
-                            Text(data.email,
-                                style: TextStyle(
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.w600,
-                                )),
-                            const SizedBox(height: 5),
-                            InkWell(
-                              onTap: () {
-                                Get.to(AccountScreen());
-                              },
-                              child: Padding(
-                                padding: const EdgeInsets.fromLTRB(0, 5, 5, 5),
-                                child: Text('Lihat Profil',
-                                    style: TextStyle(
-                                      fontSize: 12,
-                                      fontWeight: FontWeight.bold,
-                                      color: Colors.teal,
-                                    )),
-                              ),
-                            ),
-                          ],
-                        );
-                      }
-                      return Center(
-                        child: CircularProgressIndicator(),
-                      );
+                            );
+                          }
+                          return Center(
+                            child: CircularProgressIndicator(),
+                          );
+                        },
+                      )),
+                  ListTile(
+                    title: _buildTitleMenuDrawer(title: 'Favorit'),
+                    onTap: () {
+                      Get.to(FavoriteScreen());
                     },
-                  )),
-              ListTile(
-                title: _buildTitleMenuDrawer(title: 'Favorit'),
-                onTap: () {
-                  Get.to(FavoriteScreen());
-                },
+                  ),
+                  ListTile(
+                    title: _buildTitleMenuDrawer(title: 'Riwayat Pemesanan'),
+                    onTap: () {
+                      Get.to(RiwayatPesanan());
+                    },
+                  ),
+                  ListTile(
+                    title: _buildTitleMenuDrawer(title: 'Pembayaran'),
+                    onTap: () {},
+                  ),
+                  ListTile(
+                    title: _buildTitleMenuDrawer(title: 'Pusat Bantuan'),
+                    onTap: () {},
+                  ),
+                  ListTile(
+                    title: _buildTitleMenuDrawer(title: 'Pengaturan'),
+                    onTap: () {},
+                  ),
+                  Divider(),
+                  ListTile(
+                    title: _buildTitleMenuDrawer(title: 'Logout'),
+                    onTap: () {
+                      prefs.clearAll();
+                      Get.offAll(LoginScreen());
+                    },
+                  ),
+                ],
               ),
-              ListTile(
-                title: _buildTitleMenuDrawer(title: 'Riwayat Pemesanan'),
-                onTap: () {
-                  Get.to(RiwayatPesanan());
-                },
+            ),
+          ),
+          body: Stack(
+            children: [
+              Container(
+                decoration: BoxDecoration(
+                  color: Colors.transparent,
+                  image: DecorationImage(
+                    fit: BoxFit.fill,
+                    image: AssetImage(
+                      'assets/img/bg.jpeg',
+                    ),
+                  ),
+                ),
+                height: size.height,
               ),
-              ListTile(
-                title: _buildTitleMenuDrawer(title: 'Pembayaran'),
-                onTap: () {},
+              Container(
+                height: size.height,
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  gradient: LinearGradient(
+                    begin: FractionalOffset.topCenter,
+                    end: FractionalOffset.bottomCenter,
+                    colors: [
+                      Colors.white,
+                      Colors.transparent,
+                    ],
+                    stops: [0.0, 1.0],
+                  ),
+                ),
               ),
-              ListTile(
-                title: _buildTitleMenuDrawer(title: 'Pusat Bantuan'),
-                onTap: () {},
-              ),
-              ListTile(
-                title: _buildTitleMenuDrawer(title: 'Pengaturan'),
-                onTap: () {},
-              ),
-              Divider(),
-              ListTile(
-                title: _buildTitleMenuDrawer(title: 'Logout'),
-                onTap: () {
-                  prefs.clearAll();
-                  Get.offAll(LoginScreen());
-                },
-              ),
+              _buildContent(size),
+              _buildButtonBottom(),
             ],
           ),
         ),
-      ),
-      body: Stack(
-        children: [
-          Container(
-            decoration: BoxDecoration(
-              color: Colors.transparent,
-              image: DecorationImage(
-                fit: BoxFit.fill,
-                image: AssetImage(
-                  'assets/img/bg.jpeg',
-                ),
-              ),
-            ),
-            height: size.height,
-          ),
-          Container(
-            height: size.height,
-            decoration: BoxDecoration(
-              color: Colors.white,
-              gradient: LinearGradient(
-                begin: FractionalOffset.topCenter,
-                end: FractionalOffset.bottomCenter,
-                colors: [
-                  Colors.white,
-                  Colors.transparent,
-                ],
-                stops: [0.0, 1.0],
-              ),
-            ),
-          ),
-          _buildContent(size),
-          _buildButtonBottom(),
-        ],
       ),
     );
   }

@@ -1,47 +1,53 @@
 import 'package:json_annotation/json_annotation.dart';
 
-part 'order_model.g.dart';
+part 'gopay_model.g.dart';
 
 @JsonSerializable(explicitToJson: true, fieldRename: FieldRename.snake)
-class OrderModel {
+class GopayModel {
   int status;
   String message;
-  DataOrder data;
+  DataGopay data;
   @JsonKey(ignore: true)
   dynamic error;
 
-  OrderModel({
+  GopayModel({
     this.status,
     this.data,
     this.message,
   });
 
-  factory OrderModel.fromJson(Map<String, dynamic> json) =>
-      _$OrderModelFromJson(json);
+  factory GopayModel.fromJson(Map<String, dynamic> json) =>
+      _$GopayModelFromJson(json);
 
-  Map<String, dynamic> toJson() => _$OrderModelToJson(this);
+  Map<String, dynamic> toJson() => _$GopayModelToJson(this);
 
-  OrderModel.withError(this.error);
+  GopayModel.withError(this.error);
 }
 
 @JsonSerializable(explicitToJson: true, fieldRename: FieldRename.snake)
-class DataOrder {
+class DataGopay {
   String id;
+  String deeplinkRedirect;
+  String generateQrCode;
+  String getStatus;
   String noTransaction;
   int total;
   PaymentMethod paymentMethod;
 
-  DataOrder({
+  DataGopay({
     this.id,
+    this.deeplinkRedirect,
+    this.generateQrCode,
+    this.getStatus,
     this.noTransaction,
     this.total,
     this.paymentMethod,
   });
 
-  factory DataOrder.fromJson(Map<String, dynamic> json) =>
-      _$DataOrderFromJson(json);
+  factory DataGopay.fromJson(Map<String, dynamic> json) =>
+      _$DataGopayFromJson(json);
 
-  Map<String, dynamic> toJson() => _$DataOrderToJson(this);
+  Map<String, dynamic> toJson() => _$DataGopayToJson(this);
 }
 
 @JsonSerializable(explicitToJson: true, fieldRename: FieldRename.snake)

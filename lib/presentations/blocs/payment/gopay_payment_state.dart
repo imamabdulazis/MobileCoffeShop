@@ -14,7 +14,7 @@ class GopayPaymentFailure extends GopayPaymentState {
 }
 
 class GopayPaymentSuccess extends GopayPaymentState {
-  final String url;
+  final GopayModel model;
 
-  GopayPaymentSuccess(this.url);
+  GopayPaymentSuccess(this.model);
 }
