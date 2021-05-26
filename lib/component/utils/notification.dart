@@ -106,7 +106,7 @@ class NotificationService {
     /// * setting android icon notificaiton by assets name id drawable
     ///
     const AndroidInitializationSettings settingsAndroid =
-        AndroidInitializationSettings('notification');
+        AndroidInitializationSettings('@mipmap/ic_launcher');
 
     /// * setup iOS setting in initialization notification badge and other
     ///

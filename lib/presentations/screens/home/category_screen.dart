@@ -130,6 +130,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
                                     Get.to(
                                       DetailItemScreen(
                                         id: data[index].id,
+                                        isUpdate: false,
                                       ),
                                     );
                                   },

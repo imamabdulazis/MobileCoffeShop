@@ -4,6 +4,7 @@ import 'package:caffeshop/data/models/request/device_body.dart';
 import 'package:caffeshop/data/models/request/favorite_body.dart';
 import 'package:caffeshop/data/models/request/order_body.dart';
 import 'package:caffeshop/data/models/request/register_body.dart';
+import 'package:caffeshop/data/models/request/update_cart_body.dart';
 import 'package:caffeshop/data/models/response/account_model.dart';
 import 'package:caffeshop/data/models/response/cart_model.dart';
 import 'package:caffeshop/data/models/response/category_model.dart';
@@ -110,9 +111,27 @@ class ApiProvider {
     }
   }
 
+  Future<DefaultModel> updateCart(UpdateCartBody body) async {
+    try {
+      final Response response = await dio.put(
+          '/api/v1/cart/user/${prefs.getString(SharedPreferencesManager.keyIdUser)}',
+          data: body.toJson(),
+          options: Options(headers: {'isToken': true}));
+      return DefaultModel.fromJson(response.data);
+    } catch (e) {
+      return DefaultModel.withError(
+        NetworkExceptions.getErrorMessage(NetworkExceptions.getDioException(e)),
+      );
+    }
+  }
+
   Future<DefaultModel> deleteCart(String id) async {
     try {
-      final Response response = await dio.delete('/api/v1/cart/$id',
+      final Response response = await dio.delete(
+          '/api/v1/cart/user/${prefs.getString(SharedPreferencesManager.keyIdUser)}',
+          data: {
+            "drink_id": id,
+          },
           options: Options(headers: {'isToken': true}));
       return DefaultModel.fromJson(response.data);
     } catch (e) {
@@ -125,7 +144,7 @@ class ApiProvider {
   Future<FavoriteModel> getFavorite() async {
     try {
       final Response response = await dio.get(
-          '/api/v1/favorite/${prefs.getString(SharedPreferencesManager.keyIdUser)}',
+          '/api/v1/favorite/user/${prefs.getString(SharedPreferencesManager.keyIdUser)}',
           options: Options(headers: {'isToken': true}));
       return FavoriteModel.fromJson(response.data);
     } catch (e) {
@@ -149,7 +168,11 @@ class ApiProvider {
 
   Future<DefaultModel> deleteFavorite(String id) async {
     try {
-      final Response response = await dio.delete('/api/v1/favorite/$id',
+      final Response response = await dio.delete(
+          '/api/v1/favorite/user/${prefs.getString(SharedPreferencesManager.keyIdUser)}',
+          data: {
+            "drink_id": id,
+          },
           options: Options(headers: {'isToken': true}));
       return DefaultModel.fromJson(response.data);
     } catch (e) {

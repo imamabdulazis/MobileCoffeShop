@@ -27,7 +27,7 @@ class LoaderWidget extends StatelessWidget {
                 vertical: 20.0,
               ),
               decoration: BoxDecoration(
-                color: Colors.white.withOpacity(0.5),
+                color: Colors.white.withOpacity(0.9),
                 borderRadius: BorderRadius.circular(5.0),
               ),
               child: Column(

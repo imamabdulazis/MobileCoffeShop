@@ -241,29 +241,29 @@ class _HomeScreenState extends State<HomeScreen> {
               Get.to(CartScreen());
             },
           ),
-          Positioned(
-            top: 4,
-            right: 4,
-            child: Material(
-              color: Colors.white,
-              elevation: 2,
-              borderRadius: BorderRadius.circular(50),
-              child: SizedBox(
-                width: 20,
-                height: 20,
-                child: Center(
-                  child: Text(
-                    "0",
-                    style: TextStyle(
-                      fontSize: 15,
-                      fontWeight: FontWeight.w700,
-                      color: Colors.teal,
-                    ),
-                  ),
-                ),
-              ),
-            ),
-          )
+          // Positioned(
+          //   top: 4,
+          //   right: 4,
+          //   child: Material(
+          //     color: Colors.white,
+          //     elevation: 2,
+          //     borderRadius: BorderRadius.circular(50),
+          //     child: SizedBox(
+          //       width: 20,
+          //       height: 20,
+          //       child: Center(
+          //         child: Text(
+          //           "0",
+          //           style: TextStyle(
+          //             fontSize: 15,
+          //             fontWeight: FontWeight.w700,
+          //             color: Colors.teal,
+          //           ),
+          //         ),
+          //       ),
+          //     ),
+          //   ),
+          // )
         ])
       ],
     );

@@ -9,9 +9,9 @@ import 'package:meta/meta.dart';
 part 'cart_event.dart';
 part 'cart_state.dart';
 
-class CartBloc extends Bloc<CartEvent, CartState> {
+class AddCartBloc extends Bloc<CartEvent, CartState> {
   final ApiProvider provider = ApiProvider();
-  CartBloc() : super(CartInitial());
+  AddCartBloc() : super(CartInitial());
 
   @override
   Stream<CartState> mapEventToState(

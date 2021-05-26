@@ -4,19 +4,29 @@ import 'package:caffeshop/component/widget/button/favorite_button.dart';
 import 'package:caffeshop/component/widget/loader/loader_widget.dart';
 import 'package:caffeshop/data/models/request/cart_body.dart';
 import 'package:caffeshop/data/models/request/favorite_body.dart';
+import 'package:caffeshop/data/models/request/update_cart_body.dart';
 import 'package:caffeshop/data/models/response/detail_drink_model.dart';
 import 'package:caffeshop/presentations/blocs/cart/cart_bloc.dart';
+import 'package:caffeshop/presentations/blocs/cart/update_cart_bloc.dart';
 import 'package:caffeshop/presentations/blocs/drink/detail_drink_bloc.dart';
 import 'package:caffeshop/presentations/blocs/favorite/favorite_bloc.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_feather_icons/flutter_feather_icons.dart';
 import 'package:get/get.dart';
 
 class DetailItemScreen extends StatefulWidget {
   final String id;
+  final bool isUpdate;
+  final int amount;
 
-  const DetailItemScreen({Key key, this.id}) : super(key: key);
+  const DetailItemScreen({
+    Key key,
+    @required this.id,
+    @required this.isUpdate,
+    this.amount,
+  }) : super(key: key);
 
   @override
   _DetailItemScreenState createState() => _DetailItemScreenState();
@@ -24,7 +34,8 @@ class DetailItemScreen extends StatefulWidget {
 
 class _DetailItemScreenState extends State<DetailItemScreen> {
   final FavoriteBloc favoriteBloc = FavoriteBloc();
-  final CartBloc cartBloc = CartBloc();
+  final AddCartBloc addCartBloc = AddCartBloc();
+  final UpdateCartBloc updateCartBloc = UpdateCartBloc();
   final prefs = SharedPreferencesManager();
   int amount = 1;
 
@@ -32,6 +43,12 @@ class _DetailItemScreenState extends State<DetailItemScreen> {
   void initState() {
     super.initState();
     detailDrinkBloc.getDetailDrink(widget.id);
+
+    if (widget.isUpdate) {
+      setState(() {
+        amount = widget.amount;
+      });
+    }
   }
 
   void onAddPress() {
@@ -57,11 +74,18 @@ class _DetailItemScreenState extends State<DetailItemScreen> {
 
   ///[CART]
   void addCart() {
-    print("CART");
-    cartBloc.add(OnCartEvent(CartBody(
+    if (widget.isUpdate) {
+      updateCartBloc.add(OnUpdateCartEvent(UpdateCartBody(
+        drinkId: widget.id,
+        amount: amount,
+      )));
+    } else {
+      addCartBloc.add(OnCartEvent(CartBody(
         drinkId: widget.id,
         userId: prefs.getString(SharedPreferencesManager.keyIdUser),
-        amount: amount)));
+        amount: amount,
+      )));
+    }
   }
 
   @override
@@ -72,7 +96,12 @@ class _DetailItemScreenState extends State<DetailItemScreen> {
         BlocProvider(
           create: (context) => favoriteBloc,
         ),
-        BlocProvider(create: (context) => cartBloc),
+        BlocProvider(
+          create: (context) => addCartBloc,
+        ),
+        BlocProvider(
+          create: (context) => updateCartBloc,
+        ),
       ],
       child: MultiBlocListener(
         listeners: [
@@ -97,7 +126,7 @@ class _DetailItemScreenState extends State<DetailItemScreen> {
               }
             },
           ),
-          BlocListener<CartBloc, CartState>(
+          BlocListener<AddCartBloc, CartState>(
             listener: (context, state) {
               if (state is CartFailure) {
                 Get.snackbar(
@@ -111,6 +140,27 @@ class _DetailItemScreenState extends State<DetailItemScreen> {
                 Get.snackbar(
                   'Berhasil',
                   "Berhasil tambah >Keranjang",
+                  snackPosition: SnackPosition.BOTTOM,
+                  backgroundColor: Colors.green,
+                  colorText: Colors.white,
+                );
+              }
+            },
+          ),
+          BlocListener<UpdateCartBloc, UpdateCartState>(
+            listener: (context, state) {
+              if (state is UpdateCartFailure) {
+                Get.snackbar(
+                  'Gagal',
+                  state.message,
+                  snackPosition: SnackPosition.BOTTOM,
+                  backgroundColor: Colors.red,
+                  colorText: Colors.white,
+                );
+              } else if (state is UpdateCartSuccess) {
+                Get.snackbar(
+                  'Berhasil',
+                  "Berhasil Update >Keranjang",
                   snackPosition: SnackPosition.BOTTOM,
                   backgroundColor: Colors.green,
                   colorText: Colors.white,
@@ -214,13 +264,20 @@ class _DetailItemScreenState extends State<DetailItemScreen> {
               BlocBuilder<FavoriteBloc, FavoriteState>(
                   builder: (context, state) {
                 if (state is FavoriteLoading) {
-                  return LoaderWidget(title: "Mohon tunggu");
+                  return LoaderWidget(title: "Tambah Favorite");
                 }
                 return const SizedBox.shrink();
               }),
-              BlocBuilder<CartBloc, CartState>(builder: (context, state) {
+              BlocBuilder<AddCartBloc, CartState>(builder: (context, state) {
                 if (state is CartLoading) {
-                  return LoaderWidget(title: "Mohon tunggu");
+                  return LoaderWidget(title: "Tambah Keranjang");
+                }
+                return const SizedBox.shrink();
+              }),
+              BlocBuilder<UpdateCartBloc, UpdateCartState>(
+                  builder: (context, state) {
+                if (state is UpdateCartLoading) {
+                  return LoaderWidget(title: "Update Keranjang");
                 }
                 return const SizedBox.shrink();
               })
@@ -280,7 +337,7 @@ class _DetailItemScreenState extends State<DetailItemScreen> {
             ),
             _buildButton(
               title: "Checkout",
-              onPress: ()=>{},
+              onPress: () => {},
               color: Colors.teal,
             )
           ],
@@ -293,21 +350,28 @@ class _DetailItemScreenState extends State<DetailItemScreen> {
       child: Material(
         color: color,
         child: InkWell(
-          onTap: () {},
+          onTap: onPress,
           child: Padding(
-            padding: const EdgeInsets.symmetric(
-              vertical: 20,
-              horizontal: 20,
-            ),
-            child: Text(
-              title,
-              style: TextStyle(
-                fontSize: 16,
-                color: color == Colors.grey ? Colors.black : Colors.white,
-                fontWeight: FontWeight.bold,
+              padding: const EdgeInsets.symmetric(
+                vertical: 20,
+                horizontal: 20,
               ),
-            ),
-          ),
+              child: Row(
+                children: [
+                  title == "Keranjang"
+                      ? Icon(FeatherIcons.shoppingCart, size: 15)
+                      : const SizedBox.shrink(),
+                  const SizedBox(width: 10),
+                  Text(
+                    title,
+                    style: TextStyle(
+                      fontSize: 16,
+                      color: color == Colors.grey ? Colors.black : Colors.white,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ],
+              )),
         ),
       ),
     );

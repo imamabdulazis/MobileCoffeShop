@@ -48,65 +48,79 @@ class _CartScreenState extends State<CartScreen> {
             );
           }
         },
-        child: Scaffold(
-          appBar: AppBar(
-            iconTheme: IconThemeData(
-              color: Colors.black,
-            ),
-            leading: IconButton(
-                icon: Icon(
-                  Icons.close,
+        child: RefreshIndicator(
+          onRefresh: () async {
+            cartBloc.getCart();
+          },
+          child: Scaffold(
+            appBar: AppBar(
+              iconTheme: IconThemeData(
+                color: Colors.black,
+              ),
+              leading: IconButton(
+                  icon: Icon(
+                    Icons.close,
+                    color: Colors.teal,
+                  ),
+                  onPressed: () {
+                    Get.back();
+                  }),
+              elevation: 0,
+              title: Text(
+                "Keranjang",
+                style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.w700,
                   color: Colors.teal,
                 ),
-                onPressed: () {
-                  Get.back();
-                }),
-            elevation: 0,
-            title: Text(
-              "Keranjang",
-              style: TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.w700,
-                color: Colors.teal,
               ),
+              backgroundColor: Colors.transparent,
             ),
-            backgroundColor: Colors.transparent,
-          ),
-          body: Stack(children: [
-            StreamBuilder<CartModel>(
-              stream: cartBloc.subject.stream,
-              builder: (context, snapshot) {
-                if (snapshot.hasData) {
-                  var data = snapshot.data.data;
-                  return ListView.builder(itemBuilder: (context, i) {
-                    return _buildItem(
-                      image: data[i].drink.imageUrl,
-                      title: data[i].drink.name,
-                      kategori: data[i].drink.category.name,
-                      price: data[i].drink.price,
-                      amount: data[i].amount,
-                    );
-                  });
+            body: Stack(children: [
+              StreamBuilder<CartModel>(
+                stream: cartBloc.subject.stream,
+                builder: (context, snapshot) {
+                  if (snapshot.hasData) {
+                    var data = snapshot.data.data;
+                    if (data.length <= 0) {
+                      return Center(child: Text("Keranjangmu masih kosong"));
+                    }
+                    return ListView.builder(
+                        itemCount: data.length,
+                        itemBuilder: (context, i) {
+                          return _buildItem(
+                            id: data[i].id,
+                            idDrink: data[i].drink.id,
+                            image: data[i].drink.imageUrl,
+                            title: data[i].drink.name,
+                            kategori: data[i].drink.category.name,
+                            price: data[i].drink.price,
+                            amount: data[i].amount,
+                          );
+                        });
+                  }
+                  return Center(
+                    child: CircularProgressIndicator(),
+                  );
+                },
+              ),
+              BlocBuilder<DeleteCartBloc, DeleteCartState>(
+                  builder: (context, state) {
+                if (state is DeleteCartLoading) {
+                  return LoaderWidget(title: "Hapus dari keranjang");
                 }
-                return Center(
-                  child: CircularProgressIndicator(),
-                );
-              },
-            ),
-            BlocBuilder<DeleteCartBloc, DeleteCartState>(
-                builder: (context, state) {
-              if (state is DeleteCartFailure) {
-                return LoaderWidget(title: "Hapus dari keranjang");
-              }
-              return const SizedBox.shrink();
-            }),
-          ]),
+                return const SizedBox.shrink();
+              }),
+            ]),
+          ),
         ),
       ),
     );
   }
 
   Widget _buildItem({
+    String id,
+    String idDrink,
     String image,
     String title,
     String kategori,
@@ -125,6 +139,8 @@ class _CartScreenState extends State<CartScreen> {
               price: price,
             ),
             _buildFooter(
+              id: id,
+              idDrink: idDrink,
               amount: amount,
             ),
           ],
@@ -183,13 +199,21 @@ class _CartScreenState extends State<CartScreen> {
     );
   }
 
-  Widget _buildFooter({int amount}) {
+  Widget _buildFooter({
+    int amount,
+    String id,
+    String idDrink,
+  }) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         OutlinedButton.icon(
           onPressed: () {
-            Get.to(DetailItemScreen());
+            Get.to(DetailItemScreen(
+              id: idDrink,
+              isUpdate: true,
+              amount: amount,
+            ));
           },
           icon: Icon(Icons.edit),
           label: Text(
@@ -200,7 +224,9 @@ class _CartScreenState extends State<CartScreen> {
           children: [
             CustomIconButton(
               isBorder: true,
-              onPress: () {},
+              onPress: () {
+                deleteCartBloc.add(OnDeleteCartEvent(idDrink));
+              },
               title: Icon(
                 CupertinoIcons.trash,
                 color: Colors.teal,
@@ -220,11 +246,6 @@ class _CartScreenState extends State<CartScreen> {
                   ),
                 ),
               ),
-            ),
-            CustomIconButton(
-              isBorder: true,
-              onPress: () {},
-              title: Icon(CupertinoIcons.plus, size: 20, color: Colors.teal),
             ),
           ],
         )
