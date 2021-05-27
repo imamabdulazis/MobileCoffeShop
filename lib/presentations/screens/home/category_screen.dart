@@ -110,7 +110,11 @@ class _CategoryScreenState extends State<CategoryScreen> {
                     builder: (context, snapshot) {
                       if (snapshot.hasData) {
                         var data = snapshot.data.data;
-                        if (data.length <= 0) {
+                        if (snapshot.data.data == null ||
+                            snapshot.data.error != null) {
+                          return Center(
+                              child: Text("Terjadi kesalahan server"));
+                        } else if (data.length <= 0) {
                           return Expanded(
                             child:
                                 Center(child: Text("Minuman belum tersedia")),
