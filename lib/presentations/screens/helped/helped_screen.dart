@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-class SettingPage extends StatefulWidget {
+class HelpedScreen extends StatefulWidget {
   @override
-  _SettingPageState createState() => _SettingPageState();
+  _HelpedScreenState createState() => _HelpedScreenState();
 }
 
-class _SettingPageState extends State<SettingPage> {
+class _HelpedScreenState extends State<HelpedScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -24,7 +24,7 @@ class _SettingPageState extends State<SettingPage> {
             }),
         elevation: 0,
         title: Text(
-          "Pengaturan",
+          "Pusat Bantuan",
           style: TextStyle(
             fontSize: 20,
             fontWeight: FontWeight.w700,
@@ -34,7 +34,7 @@ class _SettingPageState extends State<SettingPage> {
         backgroundColor: Colors.transparent,
       ),
       body: Center(
-        child: Text("Pengaturan"),
+        child: Text("Pusat Bantuan"),
       ),
     );
   }

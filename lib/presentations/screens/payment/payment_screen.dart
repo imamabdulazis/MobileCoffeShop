@@ -114,6 +114,14 @@ class _PaymentScreenState extends State<PaymentScreen> {
                                 onTap: () {
                                   if (data[i].paymentType == 'Gopay') {
                                     orderGopay(data[i].id);
+                                  } else {
+                                    Get.snackbar(
+                                      'Mohon',
+                                      "Metode pembayaran ini belum tersedia",
+                                      snackPosition: SnackPosition.BOTTOM,
+                                      backgroundColor: Colors.orange,
+                                      colorText: Colors.white,
+                                    );
                                   }
                                 },
                                 leading: SizedBox(

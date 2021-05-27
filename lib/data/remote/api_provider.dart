@@ -32,7 +32,7 @@ class ApiProvider {
 
   ApiProvider() {
     BaseOptions options = BaseOptions(
-      baseUrl: 'http://192.168.100.7:3000',
+      baseUrl: 'http://192.168.43.100:3000',
       connectTimeout: 15000,
       receiveTimeout: 15000,
       receiveDataWhenStatusError: true,
@@ -70,6 +70,19 @@ class ApiProvider {
   Future<DrinkModel> getDrink(String id) async {
     try {
       final Response response = await dio.get('/api/v1/drink/category/$id',
+          options: Options(headers: {'isToken': true}));
+      return DrinkModel.fromJson(response.data);
+    } catch (e) {
+      return DrinkModel.withError(
+        NetworkExceptions.getErrorMessage(NetworkExceptions.getDioException(e)),
+      );
+    }
+  }
+
+  Future<DrinkModel> searchDrink(String query) async {
+    try {
+      final Response response = await dio.post('/api/v1/search',
+          data: {"name": query.toString()},
           options: Options(headers: {'isToken': true}));
       return DrinkModel.fromJson(response.data);
     } catch (e) {

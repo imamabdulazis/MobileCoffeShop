@@ -9,8 +9,10 @@ import 'package:caffeshop/data/utils/device_info.dart';
 import 'package:caffeshop/presentations/blocs/account/account_bloc.dart';
 import 'package:caffeshop/presentations/blocs/device/device_bloc.dart';
 import 'package:caffeshop/presentations/screens/favorite/favorite_screen.dart';
+import 'package:caffeshop/presentations/screens/helped/helped_screen.dart';
 import 'package:caffeshop/presentations/screens/login/login_screen.dart';
-import 'package:caffeshop/presentations/screens/riwayat_pesanan/riwayat_pesanan.dart';
+import 'package:caffeshop/presentations/screens/order_history/order_history.dart';
+import 'package:caffeshop/presentations/screens/setting/setting_screen.dart';
 import 'package:device_info/device_info.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
@@ -207,20 +209,20 @@ class _DrawerNavigationState extends State<DrawerNavigation> {
                   ListTile(
                     title: _buildTitleMenuDrawer(title: 'Riwayat Pemesanan'),
                     onTap: () {
-                      Get.to(RiwayatPesanan());
+                      Get.to(OrderHistory());
                     },
                   ),
                   ListTile(
-                    title: _buildTitleMenuDrawer(title: 'Pembayaran'),
-                    onTap: () {},
-                  ),
-                  ListTile(
                     title: _buildTitleMenuDrawer(title: 'Pusat Bantuan'),
-                    onTap: () {},
+                    onTap: () {
+                      Get.to(HelpedScreen());
+                    },
                   ),
                   ListTile(
                     title: _buildTitleMenuDrawer(title: 'Pengaturan'),
-                    onTap: () {},
+                    onTap: () {
+                      Get.to(SettingPage());
+                    },
                   ),
                   Divider(),
                   ListTile(
