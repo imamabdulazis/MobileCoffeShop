@@ -38,7 +38,7 @@ class _HelpedScreenState extends State<HelpedScreen> {
             children: [
               ExpansionTile(
                   title: Text(
-                    "Cara mencari minuman sesui kategori",
+                    "Cara mencari minuman sesuai kategori",
                     style: TextStyle(fontWeight: FontWeight.bold),
                   ),
                   children: [
