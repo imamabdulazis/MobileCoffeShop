@@ -106,7 +106,7 @@ class _OrderHistoryState extends State<OrderHistory> {
                                         colorText: Colors.white,
                                       );
                                     } else {
-                                      _onPay(data[i].id);
+                                      showAlertDialog(context, data[i].id);
                                     }
                                   },
                                   subtitle: Column(
@@ -114,7 +114,7 @@ class _OrderHistoryState extends State<OrderHistory> {
                                         CrossAxisAlignment.start,
                                     children: [
                                       Text(
-                                        data[i].noTransaction,
+                                        "No : ${data[i].noTransaction} | ${data[i].paymentMethod.paymentType}",
                                         style: TextStyle(
                                           fontWeight: FontWeight.w700,
                                           fontSize: 14,
@@ -143,13 +143,17 @@ class _OrderHistoryState extends State<OrderHistory> {
                                       ),
                                       const SizedBox(height: 7),
                                       Container(
-                                        color:
-                                            data[i].paymentStatus == "Pending"
-                                                ? Colors.orange
-                                                : data[i].paymentStatus ==
-                                                        "Berhasil"
-                                                    ? Colors.green
-                                                    : Colors.black,
+                                        decoration: BoxDecoration(
+                                          color:
+                                              data[i].paymentStatus == "Pending"
+                                                  ? Colors.orange
+                                                  : data[i].paymentStatus ==
+                                                          "Berhasil"
+                                                      ? Colors.green
+                                                      : Colors.black,
+                                          borderRadius:
+                                              BorderRadius.circular(10),
+                                        ),
                                         padding: const EdgeInsets.all(5),
                                         child: Text(
                                           data[i].paymentStatus,
@@ -190,6 +194,39 @@ class _OrderHistoryState extends State<OrderHistory> {
           ),
         ),
       ),
+    );
+  }
+
+  showAlertDialog(BuildContext context, String uuid) {
+    Widget cancelButton = TextButton(
+      child: Text("BATAL"),
+      onPressed: () {
+        Navigator.of(context).pop();
+      },
+    );
+
+    Widget payButton = TextButton(
+      child: Text("BAYAR"),
+      onPressed: () {
+        Navigator.of(context).pop();
+        Future.delayed(Duration(milliseconds: 700), () {
+          _onPay(uuid);
+        });
+      },
+    );
+
+    // Create AlertDialog
+    AlertDialog alert = AlertDialog(
+      title: Text("Pembayaran Pending"),
+      content: Text("Apakah anda akan melakukan pembayaran sekarang?"),
+      actions: [cancelButton, payButton],
+    );
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return alert;
+      },
     );
   }
 

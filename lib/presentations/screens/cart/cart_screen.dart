@@ -12,8 +12,7 @@ import 'package:intl/intl.dart';
 import '../../../component/widget/button/custom_icon_button.dart';
 import '../home/detail_item_screen.dart';
 
-
- var f = NumberFormat('#,##0.00', 'id_ID');
+var f = NumberFormat('#,##0.00', 'id_ID');
 
 class CartScreen extends StatefulWidget {
   @override
@@ -30,8 +29,6 @@ class _CartScreenState extends State<CartScreen> {
 
   @override
   Widget build(BuildContext context) {
-
-   
     f.maximumFractionDigits = 0;
     return BlocProvider(
       create: (context) => deleteCartBloc,
@@ -91,7 +88,18 @@ class _CartScreenState extends State<CartScreen> {
                   if (snapshot.hasData) {
                     var data = snapshot.data.data;
                     if (data.length <= 0) {
-                      return Center(child: Text("Keranjangmu masih kosong"));
+                      return Center(
+                          child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          SizedBox(
+                            width: 200,
+                            child: Image.asset('assets/img/empty-cart.png',
+                                fit: BoxFit.cover),
+                          ),
+                          Text("Keranjangmu masih kosong")
+                        ],
+                      ));
                     }
                     return ListView.builder(
                         itemCount: data.length,
@@ -150,9 +158,9 @@ class _CartScreenState extends State<CartScreen> {
               id: id,
               idDrink: idDrink,
               amount: amount,
-              categoryName:kategori,
+              categoryName: kategori,
               imageUrl: image,
-              price:  price,
+              price: price,
               name: title,
             ),
           ],
@@ -167,8 +175,7 @@ class _CartScreenState extends State<CartScreen> {
     String kategori,
     String price,
   }) {
-
-     f.maximumFractionDigits = 0;
+    f.maximumFractionDigits = 0;
     return Row(
       children: [
         Image.network(
@@ -233,12 +240,11 @@ class _CartScreenState extends State<CartScreen> {
               amount: amount,
             ));
           },
-          icon: Icon(Icons.edit,size: 20),
+          icon: Icon(Icons.edit, size: 20),
           label: Text(
             "Edit",
           ),
         ),
-
         OutlinedButton.icon(
           onPressed: () {
             Get.to(SumaryOrder(
@@ -250,7 +256,7 @@ class _CartScreenState extends State<CartScreen> {
               price: int.parse(price),
             ));
           },
-          icon: Icon(Icons.payment,size:20),
+          icon: Icon(Icons.payment, size: 20),
           label: Text(
             "Checkout",
           ),

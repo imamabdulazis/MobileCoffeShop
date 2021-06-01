@@ -218,18 +218,14 @@ class _DrawerNavigationState extends State<DrawerNavigation> {
                       Get.to(HelpedScreen());
                     },
                   ),
-                  ListTile(
-                    title: _buildTitleMenuDrawer(title: 'Pengaturan'),
-                    onTap: () {
-                      Get.to(SettingPage());
-                    },
-                  ),
                   Divider(),
                   ListTile(
                     title: _buildTitleMenuDrawer(title: 'Logout'),
                     onTap: () {
-                      prefs.clearAll();
-                      Get.offAll(LoginScreen());
+                      Get.back();
+                      Future.delayed(Duration(milliseconds: 500), () {
+                        showAlertDialog(context);
+                      });
                     },
                   ),
                 ],
@@ -271,6 +267,43 @@ class _DrawerNavigationState extends State<DrawerNavigation> {
           ),
         ),
       ),
+    );
+  }
+
+  showAlertDialog(BuildContext context) {
+    Widget cancelButton = TextButton(
+      child: Text("BATAL"),
+      onPressed: () {
+        Navigator.of(context).pop();
+      },
+    );
+
+    Widget logoutButton = TextButton(
+      child: Text("LOGOUT", style: TextStyle(color: Colors.red)),
+      onPressed: () {
+        Navigator.of(context).pop();
+        Future.delayed(Duration(milliseconds: 700), () {
+          prefs.clearAll();
+          Get.offAll(LoginScreen());
+        });
+      },
+    );
+
+    // Create AlertDialog
+    AlertDialog alert = AlertDialog(
+      title: Text("Logout Aplikasi"),
+      content: Text("Apakah anda akan logout aplikasi sekarang?"),
+      actions: [
+        cancelButton,
+        logoutButton,
+      ],
+    );
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return alert;
+      },
     );
   }
 

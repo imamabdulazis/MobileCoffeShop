@@ -92,9 +92,20 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
                           var data = snapshot.data.data;
                           if (data.length <= 0) {
                             return Expanded(
-                              child:
-                                  Center(child: Text("Favoritmu masih kosong")),
-                            );
+                            child: Center(
+                                child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                SizedBox(
+                                  width: 200,
+                                  child: Image.asset(
+                                      'assets/img/favorite.png',
+                                      fit: BoxFit.cover),
+                                ),
+                                Text("Favoritmu masih kosong")
+                              ],
+                            )),
+                          );
                           }
                           return Flexible(
                             child: GridView.builder(
@@ -130,9 +141,13 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
                                             color: Colors.white,
                                             child: Stack(
                                               children: [
-                                                Image.network(
-                                                  data[index].drink.imageUrl,
-                                                  fit: BoxFit.cover,
+                                                SizedBox(
+                                                  width:200,
+                                                  height: 150,
+                                                  child: Image.network(
+                                                    data[index].drink.imageUrl,
+                                                    fit: BoxFit.cover,
+                                                  ),
                                                 ),
                                                 Positioned(
                                                   top: -2,
@@ -200,7 +215,7 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
               ),
               BlocBuilder<DeleteFavoriteBloc, DeleteFavoriteState>(
                   builder: (context, state) {
-                if (state is DeleteFavoriteFailure) {
+                if (state is DeleteFavoriteLoading) {
                   return LoaderWidget(title: "Hapus favorite");
                 }
                 return const SizedBox.shrink();

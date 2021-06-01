@@ -23,6 +23,7 @@ class _AccountScreenState extends State<AccountScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        backgroundColor: CupertinoColors.extraLightBackgroundGray,
         appBar: AppBar(
           elevation: 0,
           centerTitle: true,
@@ -44,6 +45,15 @@ class _AccountScreenState extends State<AccountScreen> {
             ),
           ),
           backgroundColor: Colors.transparent,
+          actions: [
+            IconButton(
+              icon: Icon(
+                Icons.edit,
+                color: Colors.teal,
+              ),
+              onPressed: () {},
+            ),
+          ],
         ),
         body: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
@@ -53,48 +63,56 @@ class _AccountScreenState extends State<AccountScreen> {
               builder: (context, snapshot) {
                 if (snapshot.hasData) {
                   var data = snapshot.data.data;
-                  return Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      CircleAvatar(
-                        minRadius: 36,
-                        backgroundColor: Colors.teal,
-                        child: CircleAvatar(
-                          minRadius: 34,
-                          backgroundColor:
-                              CupertinoColors.extraLightBackgroundGray,
-                          backgroundImage: NetworkImage(
-                            data.imageUrl,
-                          ),
+                  return Padding(
+                    padding: const EdgeInsets.all(40.0),
+                    child: Card(
+                      child: Padding(
+                        padding: const EdgeInsets.all(10.0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            CircleAvatar(
+                              minRadius: 36,
+                              backgroundColor: Colors.teal,
+                              child: CircleAvatar(
+                                minRadius: 34,
+                                backgroundColor:
+                                    CupertinoColors.extraLightBackgroundGray,
+                                backgroundImage: NetworkImage(
+                                  data.imageUrl,
+                                ),
+                              ),
+                            ),
+                            const SizedBox.shrink(),
+                            const SizedBox(height: 10),
+                            Text(data.name,
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                )),
+                            const SizedBox(height: 5),
+                            Padding(
+                              padding: const EdgeInsets.fromLTRB(0, 5, 5, 5),
+                              child: Text(data.email,
+                                  style: TextStyle(
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.teal,
+                                  )),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.fromLTRB(0, 5, 5, 5),
+                              child: Text(data.telpNumber ?? "-",
+                                  style: TextStyle(
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.teal,
+                                  )),
+                            ),
+                          ],
                         ),
                       ),
-                      const SizedBox.shrink(),
-                      const SizedBox(height: 10),
-                      Text(data.name,
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                          )),
-                      const SizedBox(height: 5),
-                      Padding(
-                        padding: const EdgeInsets.fromLTRB(0, 5, 5, 5),
-                        child: Text(data.email,
-                            style: TextStyle(
-                              fontSize: 12,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.teal,
-                            )),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.fromLTRB(0, 5, 5, 5),
-                        child: Text(data.telpNumber ?? "-",
-                            style: TextStyle(
-                              fontSize: 12,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.teal,
-                            )),
-                      ),
-                    ],
+                    ),
                   );
                 }
                 return Center(

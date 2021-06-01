@@ -116,8 +116,19 @@ class _CategoryScreenState extends State<CategoryScreen> {
                               child: Text("Terjadi kesalahan server"));
                         } else if (data.length <= 0) {
                           return Expanded(
-                            child:
-                                Center(child: Text("Minuman belum tersedia")),
+                            child: Center(
+                                child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                SizedBox(
+                                  width: 200,
+                                  child: Image.asset('assets/img/cup.png',
+                                      fit: BoxFit.cover),
+                                ),
+                                Text("Minuman belum tersedia"),
+                                SizedBox(height: 150),
+                              ],
+                            )),
                           );
                         }
                         return Flexible(
@@ -153,9 +164,13 @@ class _CategoryScreenState extends State<CategoryScreen> {
                                           color: Colors.white,
                                           child: Stack(
                                             children: [
-                                              Image.network(
-                                                data[index].imageUrl,
-                                                fit: BoxFit.cover,
+                                              SizedBox(
+                                                width: 150,
+                                                height: 100,
+                                                child: Image.network(
+                                                  data[index].imageUrl,
+                                                  fit: BoxFit.cover,
+                                                ),
                                               ),
                                               Positioned(
                                                 top: -2,

@@ -96,7 +96,19 @@ class _SearchScreenState extends State<SearchScreen> {
                         var data = snapshot.data.data;
                         if (data.length <= 0) {
                           return Expanded(
-                            child: Center(child: Text("Minuman tidak ditemukan")),
+                            child: Center(
+                                child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                SizedBox(
+                                  width: 200,
+                                  child: Image.asset(
+                                      'assets/img/search.png',
+                                      fit: BoxFit.cover),
+                                ),
+                                Text("Pencarian tidak ditemukan")
+                              ],
+                            )),
                           );
                         }
                         return Flexible(
@@ -132,16 +144,20 @@ class _SearchScreenState extends State<SearchScreen> {
                                           color: Colors.white,
                                           child: Stack(
                                             children: [
-                                              Image.network(
-                                                data[index].imageUrl,
-                                                fit: BoxFit.cover,
+                                              SizedBox(
+                                                width: 200,
+                                                height: 150,
+                                                child: Image.network(
+                                                  data[index].imageUrl,
+                                                  fit: BoxFit.cover,
+                                                ),
                                               ),
                                               Positioned(
                                                 top: -2,
                                                 right: -2,
                                                 child: FavoritButton(
-                                                  onPress: () =>
-                                                      addFavorite(data[index].id),
+                                                  onPress: () => addFavorite(
+                                                      data[index].id),
                                                   size: 16,
                                                 ),
                                               ),
@@ -192,15 +208,15 @@ class _SearchScreenState extends State<SearchScreen> {
                       );
                     },
                   ),
-                  BlocBuilder<FavoriteBloc, FavoriteState>(
-                      builder: (context, state) {
-                    if (state is FavoriteLoading) {
-                      return LoaderWidget(title: "Menambah ke favorite...");
-                    }
-                    return const SizedBox.shrink();
-                  })
                 ]),
-              )
+              ),
+              BlocBuilder<FavoriteBloc, FavoriteState>(
+                  builder: (context, state) {
+                if (state is FavoriteLoading) {
+                  return LoaderWidget(title: "Menambah ke favorite...");
+                }
+                return const SizedBox.shrink();
+              })
             ]),
           ),
         ),
