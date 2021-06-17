@@ -1,4 +1,4 @@
 # caffeshop
 
-A new Flutter project.
+Flutter app coffeshop order with payment gateway midtrans
 
