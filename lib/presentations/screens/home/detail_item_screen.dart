@@ -2,14 +2,16 @@ import 'package:caffeshop/component/constants/share_preference.dart';
 import 'package:caffeshop/component/widget/button/custom_icon_button.dart';
 import 'package:caffeshop/component/widget/button/favorite_button.dart';
 import 'package:caffeshop/component/widget/loader/loader_widget.dart';
+import 'package:caffeshop/data/models/request/add_cart_body.dart';
 import 'package:caffeshop/data/models/request/cart_body.dart';
 import 'package:caffeshop/data/models/request/favorite_body.dart';
 import 'package:caffeshop/data/models/request/update_cart_body.dart';
 import 'package:caffeshop/data/models/response/detail_drink_model.dart';
-import 'package:caffeshop/presentations/blocs/cart/cart_bloc.dart';
+import 'package:caffeshop/presentations/blocs/cart/add/add_cart_bloc.dart';
 import 'package:caffeshop/presentations/blocs/cart/update_cart_bloc.dart';
 import 'package:caffeshop/presentations/blocs/drink/detail_drink_bloc.dart';
 import 'package:caffeshop/presentations/blocs/favorite/favorite_bloc.dart';
+import 'package:caffeshop/presentations/screens/cart/cart_screen.dart';
 import 'package:caffeshop/presentations/screens/sumary_order/sumary_order.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -23,13 +25,13 @@ var f = NumberFormat('#,##0.00', 'id_ID');
 class DetailItemScreen extends StatefulWidget {
   final String id;
   final bool isUpdate;
-  final int amount;
+  final int quantity;
 
   const DetailItemScreen({
     Key key,
     @required this.id,
     @required this.isUpdate,
-    this.amount,
+    this.quantity,
   }) : super(key: key);
 
   @override
@@ -41,7 +43,8 @@ class _DetailItemScreenState extends State<DetailItemScreen> {
   final AddCartBloc addCartBloc = AddCartBloc();
   final UpdateCartBloc updateCartBloc = UpdateCartBloc();
   final prefs = SharedPreferencesManager();
-  int amount = 1;
+  int quantity = 1;
+  int stock = 0;
 
   @override
   void initState() {
@@ -50,20 +53,20 @@ class _DetailItemScreenState extends State<DetailItemScreen> {
 
     if (widget.isUpdate) {
       setState(() {
-        amount = widget.amount;
+        quantity = widget.quantity;
       });
     }
   }
 
   void onAddPress() {
     setState(() {
-      amount += 1;
+      quantity += 1;
     });
   }
 
   void onMinPress() {
     setState(() {
-      amount != 1 ? amount -= 1 : amount = 1;
+      quantity != 1 ? quantity -= 1 : quantity = 1;
     });
   }
 
@@ -79,15 +82,15 @@ class _DetailItemScreenState extends State<DetailItemScreen> {
   ///[CART]
   void addCart() {
     if (widget.isUpdate) {
-      updateCartBloc.add(OnUpdateCartEvent(UpdateCartBody(
-        drinkId: widget.id,
-        amount: amount,
-      )));
+      // updateCartBloc.add(OnUpdateCartEvent(UpdateCartBody(
+      //   drinkId: widget.id,
+      //   quantity: quantity,
+      // )));
     } else {
-      addCartBloc.add(OnCartEvent(CartBody(
+      addCartBloc.add(OnAddCartEvent(AddCartBody(
         drinkId: widget.id,
         userId: prefs.getString(SharedPreferencesManager.keyIdUser),
-        amount: amount,
+        quantity: quantity,
       )));
     }
   }
@@ -132,17 +135,17 @@ class _DetailItemScreenState extends State<DetailItemScreen> {
               }
             },
           ),
-          BlocListener<AddCartBloc, CartState>(
+          BlocListener<AddCartBloc, AddCartState>(
             listener: (context, state) {
-              if (state is CartFailure) {
+              if (state is AddCartFailure) {
                 Get.snackbar(
                   'Gagal',
-                  state.mesage,
+                  state.message,
                   snackPosition: SnackPosition.BOTTOM,
                   backgroundColor: Colors.red,
                   colorText: Colors.white,
                 );
-              } else if (state is CartSuccess) {
+              } else if (state is AddCartSuccess) {
                 Get.snackbar(
                   'Berhasil',
                   "Berhasil tambah >Keranjang",
@@ -195,6 +198,7 @@ class _DetailItemScreenState extends State<DetailItemScreen> {
                 builder: (context, snapshot) {
                   if (snapshot.hasData) {
                     var data = snapshot.data.data;
+                    stock = data.stock;
                     return Stack(children: [
                       ListView(
                         children: [
@@ -271,14 +275,14 @@ class _DetailItemScreenState extends State<DetailItemScreen> {
                                   ),
                                 ),
                                 const SizedBox(height: 20),
-                                _buildAddButton(),
+                                _buildAddButton(data.stock),
                               ],
                             ),
                           ),
                         ],
                       ),
                       _buildButtonBottom(
-                        amount: amount,
+                        quantity: quantity,
                         idDrink: data.id,
                         name: data.name,
                         categoryName: data.category.name,
@@ -299,8 +303,8 @@ class _DetailItemScreenState extends State<DetailItemScreen> {
                 }
                 return const SizedBox.shrink();
               }),
-              BlocBuilder<AddCartBloc, CartState>(builder: (context, state) {
-                if (state is CartLoading) {
+              BlocBuilder<AddCartBloc, AddCartState>(builder: (context, state) {
+                if (state is AddCartLoading) {
                   return LoaderWidget(title: "Tambah Keranjang");
                 }
                 return const SizedBox.shrink();
@@ -319,7 +323,7 @@ class _DetailItemScreenState extends State<DetailItemScreen> {
     );
   }
 
-  Widget _buildAddButton() {
+  Widget _buildAddButton(int stock) {
     return Row(
       children: [
         CustomIconButton(
@@ -337,7 +341,7 @@ class _DetailItemScreenState extends State<DetailItemScreen> {
             isBorder: false,
             onPress: () {},
             title: Text(
-              "$amount",
+              "$quantity",
               style: TextStyle(
                 fontSize: 20,
                 color: Colors.white,
@@ -347,7 +351,7 @@ class _DetailItemScreenState extends State<DetailItemScreen> {
         ),
         CustomIconButton(
           isBorder: true,
-          onPress: onAddPress,
+          onPress: quantity == stock || stock == 0 ? null : onAddPress,
           title: Icon(CupertinoIcons.plus, size: 20, color: Colors.teal),
         ),
       ],
@@ -355,7 +359,7 @@ class _DetailItemScreenState extends State<DetailItemScreen> {
   }
 
   Widget _buildButtonBottom({
-    int amount,
+    int quantity,
     String idDrink,
     String name,
     String categoryName,
@@ -376,15 +380,19 @@ class _DetailItemScreenState extends State<DetailItemScreen> {
             _buildButton(
               title: "Checkout",
               onPress: () {
-                Get.to(SumaryOrder(
-                  drinkId: idDrink,
-                  name: name,
-                  categoryName: categoryName,
-                  imageUrl: imageUrl,
-                  qty: amount,
-                  price: int.parse(price),
-                ));
+                addCart();
+                Future.delayed(Duration(milliseconds: 700), () {
+                  Get.to(CartScreen());
+                });
               },
+              // Get.to(SumaryOrder(
+              //   drinkId: idDrink,
+              //   name: name,
+              //   categoryName: categoryName,
+              //   imageUrl: imageUrl,
+              //   qty: quantity,
+              //   price: int.parse(price),
+              // ));
               color: Colors.teal,
             )
           ],
@@ -397,7 +405,7 @@ class _DetailItemScreenState extends State<DetailItemScreen> {
       child: Material(
         color: color,
         child: InkWell(
-          onTap: onPress,
+          onTap: stock == 0 ? null : onPress,
           child: Padding(
               padding: const EdgeInsets.symmetric(
                 vertical: 20,

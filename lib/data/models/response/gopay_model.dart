@@ -54,10 +54,12 @@ class DataGopay {
 class PaymentMethod {
   String id;
   String paymentType;
+  String description;
 
   PaymentMethod({
     this.id,
     this.paymentType,
+    this.description,
   });
 
   factory PaymentMethod.fromJson(Map<String, dynamic> json) =>

@@ -52,6 +52,7 @@ PaymentMethod _$PaymentMethodFromJson(Map<String, dynamic> json) {
   return PaymentMethod(
     id: json['id'] as String,
     paymentType: json['payment_type'] as String,
+    description: json['description'] as String,
   );
 }
 
@@ -59,4 +60,5 @@ Map<String, dynamic> _$PaymentMethodToJson(PaymentMethod instance) =>
     <String, dynamic>{
       'id': instance.id,
       'payment_type': instance.paymentType,
+      'description': instance.description,
     };

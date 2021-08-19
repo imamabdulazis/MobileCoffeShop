@@ -1,8 +1,10 @@
 import 'package:caffeshop/component/constants/share_preference.dart';
+import 'package:caffeshop/data/models/request/add_cart_body.dart';
 import 'package:caffeshop/data/models/request/cart_body.dart';
 import 'package:caffeshop/data/models/request/device_body.dart';
 import 'package:caffeshop/data/models/request/favorite_body.dart';
 import 'package:caffeshop/data/models/request/gopay_body.dart';
+import 'package:caffeshop/data/models/request/new_order_body.dart';
 import 'package:caffeshop/data/models/request/order_body.dart';
 import 'package:caffeshop/data/models/request/register_body.dart';
 import 'package:caffeshop/data/models/request/update_cart_body.dart';
@@ -11,6 +13,7 @@ import 'package:caffeshop/data/models/response/cart_model.dart';
 import 'package:caffeshop/data/models/response/category_model.dart';
 import 'package:caffeshop/data/models/response/default_model.dart';
 import 'package:caffeshop/data/models/response/detail_drink_model.dart';
+import 'package:caffeshop/data/models/response/detail_order_model.dart';
 import 'package:caffeshop/data/models/response/drink_model.dart';
 import 'package:caffeshop/data/models/response/favorite_model.dart';
 import 'package:caffeshop/data/models/response/gopay_model.dart';
@@ -32,7 +35,8 @@ class ApiProvider {
 
   ApiProvider() {
     BaseOptions options = BaseOptions(
-      baseUrl: 'https://copsychus.vercel.app',
+      // baseUrl: 'https://copsychus.vercel.app',
+      baseUrl: 'http://10.0.2.2:3000',
       connectTimeout: 15000,
       receiveTimeout: 15000,
       receiveDataWhenStatusError: true,
@@ -107,7 +111,7 @@ class ApiProvider {
   Future<CartModel> getCart() async {
     try {
       final Response response = await dio.get(
-          '/api/v1/cart/${prefs.getString(SharedPreferencesManager.keyIdUser)}',
+          '/api/v1/cart_item/user/${prefs.getString(SharedPreferencesManager.keyIdUser)}',
           options: Options(headers: {'isToken': true}));
       return CartModel.fromJson(response.data);
     } catch (e) {
@@ -145,11 +149,7 @@ class ApiProvider {
 
   Future<DefaultModel> deleteCart(String id) async {
     try {
-      final Response response = await dio.delete(
-          '/api/v1/cart/user/${prefs.getString(SharedPreferencesManager.keyIdUser)}',
-          data: {
-            "drink_id": id,
-          },
+      final Response response = await dio.delete('/api/v1/cart_item/$id',
           options: Options(headers: {'isToken': true}));
       return DefaultModel.fromJson(response.data);
     } catch (e) {
@@ -260,7 +260,7 @@ class ApiProvider {
   Future<OrderListModel> getListOrder() async {
     try {
       final Response response = await dio.get(
-        '/api/v1/orders/user/${prefs.getString(SharedPreferencesManager.keyIdUser)}',
+        '/api/v1/new_orders/user/${prefs.getString(SharedPreferencesManager.keyIdUser)}',
         options: Options(headers: {'isToken': true}),
       );
       return OrderListModel.fromJson(response.data);
@@ -348,6 +348,56 @@ class ApiProvider {
       return TransactionStatusModel.fromJson(response.data);
     } catch (e) {
       return TransactionStatusModel.withError(
+        NetworkExceptions.getErrorMessage(
+          NetworkExceptions.getDioException(e),
+        ),
+      );
+    }
+  }
+
+  Future<OrderModel> postNewOrderDrink(NewOrderBody body) async {
+    try {
+      final Response response = await dio.post(
+        '/api/v1/new_orders',
+        data: body.toJson(),
+        options: Options(headers: {'isToken': true}),
+      );
+      return OrderModel.fromJson(response.data);
+    } catch (e) {
+      return OrderModel.withError(
+        NetworkExceptions.getErrorMessage(
+          NetworkExceptions.getDioException(e),
+        ),
+      );
+    }
+  }
+
+  Future<DefaultModel> postAddCart(AddCartBody body) async {
+    try {
+      final Response response = await dio.post(
+        '/api/v1/cart_item',
+        data: body.toJson(),
+        options: Options(headers: {'isToken': true}),
+      );
+      return DefaultModel.fromJson(response.data);
+    } catch (e) {
+      return DefaultModel.withError(
+        NetworkExceptions.getErrorMessage(
+          NetworkExceptions.getDioException(e),
+        ),
+      );
+    }
+  }
+
+  Future<DetailOrderModel> detailorder(String id) async {
+    try {
+      final Response response = await dio.get(
+        '/api/v1/new_orders/detail/$id',
+        options: Options(headers: {'isToken': true}),
+      );
+      return DetailOrderModel.fromJson(response.data);
+    } catch (e) {
+      return DetailOrderModel.withError(
         NetworkExceptions.getErrorMessage(
           NetworkExceptions.getDioException(e),
         ),

@@ -92,20 +92,20 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
                           var data = snapshot.data.data;
                           if (data.length <= 0) {
                             return Expanded(
-                            child: Center(
-                                child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                SizedBox(
-                                  width: 200,
-                                  child: Image.asset(
-                                      'assets/img/favorite.png',
-                                      fit: BoxFit.cover),
-                                ),
-                                Text("Favoritmu masih kosong")
-                              ],
-                            )),
-                          );
+                              child: Center(
+                                  child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  SizedBox(
+                                    width: 200,
+                                    child: Image.asset(
+                                        'assets/img/favorite.png',
+                                        fit: BoxFit.cover),
+                                  ),
+                                  Text("Favoritmu masih kosong")
+                                ],
+                              )),
+                            );
                           }
                           return Flexible(
                             child: GridView.builder(
@@ -130,19 +130,17 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
                                         ),
                                       );
                                     },
-                                    child: SizedBox(
-                                      height: 200,
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Card(
-                                            margin: EdgeInsets.zero,
-                                            color: Colors.white,
-                                            child: Stack(
+                                    child: Card(
+                                      child: SizedBox(
+                                        height: 200,
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Stack(
                                               children: [
                                                 SizedBox(
-                                                  width:200,
+                                                  width: 200,
                                                   height: 150,
                                                   child: Image.network(
                                                     data[index].drink.imageUrl,
@@ -165,36 +163,47 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
                                                 ),
                                               ],
                                             ),
-                                          ),
-                                          const SizedBox(height: 10),
-                                          SizedBox(
-                                            width: itemWidth,
-                                            child: Text(
-                                              data[index].drink.name,
-                                              maxLines: 2,
-                                              overflow: TextOverflow.ellipsis,
-                                              style: TextStyle(
-                                                fontSize: 12,
-                                                color: Colors.black,
-                                                fontWeight: FontWeight.w500,
+                                            Padding(
+                                              padding: const EdgeInsets.all(10.0),
+                                              child: Column(
+                                                children: [
+                                                  const SizedBox(height: 10),
+                                                  SizedBox(
+                                                    width: itemWidth,
+                                                    child: Text(
+                                                      data[index].drink.name,
+                                                      maxLines: 2,
+                                                      overflow:
+                                                          TextOverflow.ellipsis,
+                                                      style: TextStyle(
+                                                        fontSize: 12,
+                                                        color: Colors.black,
+                                                        fontWeight:
+                                                            FontWeight.w500,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  const SizedBox(height: 10),
+                                                  SizedBox(
+                                                    width: itemWidth,
+                                                    child: Text(
+                                                      data[index].drink.price,
+                                                      maxLines: 2,
+                                                      overflow:
+                                                          TextOverflow.ellipsis,
+                                                      style: TextStyle(
+                                                        fontSize: 12,
+                                                        color: Colors.teal,
+                                                        fontWeight:
+                                                            FontWeight.w700,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ],
                                               ),
-                                            ),
-                                          ),
-                                          const SizedBox(height: 10),
-                                          SizedBox(
-                                            width: itemWidth,
-                                            child: Text(
-                                              data[index].drink.price,
-                                              maxLines: 2,
-                                              overflow: TextOverflow.ellipsis,
-                                              style: TextStyle(
-                                                fontSize: 12,
-                                                color: Colors.teal,
-                                                fontWeight: FontWeight.w700,
-                                              ),
-                                            ),
-                                          ),
-                                        ],
+                                            )
+                                          ],
+                                        ),
                                       ),
                                     ),
                                   ),

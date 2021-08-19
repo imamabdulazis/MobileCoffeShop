@@ -1,7 +1,10 @@
 import 'package:caffeshop/component/widget/loader/loader_widget.dart';
+import 'package:caffeshop/data/models/request/new_order_body.dart';
 import 'package:caffeshop/data/models/request/order_body.dart';
 import 'package:caffeshop/data/models/response/payment_list_model.dart';
 import 'package:caffeshop/data/utils/dynamic_link.dart';
+import 'package:caffeshop/presentations/blocs/cart/delete/delete_all_cart_bloc.dart';
+import 'package:caffeshop/presentations/blocs/new_orders/new_orders_bloc.dart';
 import 'package:caffeshop/presentations/blocs/order/orders_bloc.dart';
 import 'package:caffeshop/presentations/blocs/payment/get_payment.dart';
 import 'package:caffeshop/presentations/screens/payment_vendor/gopay_screen.dart';
@@ -10,15 +13,16 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
 
 class PaymentScreen extends StatefulWidget {
-  final OrderBody orderBody;
+  final NewOrderBody newOrderBody;
 
-  const PaymentScreen({Key key, this.orderBody}) : super(key: key);
+  const PaymentScreen({Key key, this.newOrderBody}) : super(key: key);
   @override
   _PaymentScreenState createState() => _PaymentScreenState();
 }
 
 class _PaymentScreenState extends State<PaymentScreen> {
-  final OrdersBloc ordersBloc = OrdersBloc();
+  final NewOrdersBloc ordersBloc = NewOrdersBloc();
+  final DeleteAllCartBloc deleteAllCartBloc = DeleteAllCartBloc();
 
   final DynamicLinkService dynamicLinkService = DynamicLinkService();
   @override
@@ -28,15 +32,12 @@ class _PaymentScreenState extends State<PaymentScreen> {
   }
 
   void orderGopay(String paymentId) async {
-    ordersBloc.add(OnOrdersEvent(OrderBody(
+    ordersBloc.add(OnNewOrdersEvent(NewOrderBody(
+      userId: widget.newOrderBody.userId,
+      drinks: widget.newOrderBody.drinks,
       paymentMethodId: paymentId,
-      amount: widget.orderBody.amount,
-      discount: widget.orderBody.discount,
-      drinkId: widget.orderBody.drinkId,
-      orderStatus: "Active",
-      paymentStatus: "Pending",
-      total: widget.orderBody.total,
-      userId: widget.orderBody.userId,
+      cartId: widget.newOrderBody.cartId,
+      total: widget.newOrderBody.total,
     )));
   }
 
@@ -48,14 +49,18 @@ class _PaymentScreenState extends State<PaymentScreen> {
       },
       child: MultiBlocProvider(
         providers: [
-          BlocProvider<OrdersBloc>(
+          BlocProvider<NewOrdersBloc>(
             create: (context) => ordersBloc,
+          ),
+           BlocProvider<DeleteAllCartBloc>(
+            create: (context) => deleteAllCartBloc,
           ),
         ],
         child: MultiBlocListener(
           listeners: [
-            BlocListener<OrdersBloc, OrdersState>(listener: (context, state) {
-              if (state is OrdersFailure) {
+            BlocListener<NewOrdersBloc, NewOrdersState>(
+                listener: (context, state) {
+              if (state is NewOrdersFailure) {
                 Get.snackbar(
                   'Gagal',
                   state.message == "Error due to a conflict"
@@ -65,7 +70,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
                   backgroundColor: Colors.red,
                   colorText: Colors.white,
                 );
-              } else if (state is OrdersSuccess) {
+              } else if (state is NewOrdersSuccess) {
                 Get.snackbar(
                   'Berhasil',
                   "Berhasil membuat pesanan",
@@ -73,13 +78,13 @@ class _PaymentScreenState extends State<PaymentScreen> {
                   backgroundColor: Colors.green,
                   colorText: Colors.white,
                 );
-                // Future.delayed(Duration(milliseconds: 1500), () {
+                Future.delayed(Duration(milliseconds: 1500), () {
                 Get.to(GojekPayScreen(
-                  uuid: state.orderModel.data.id,
-                  number: state.orderModel.data.noTransaction,
-                  total: state.orderModel.data.total.toString(),
+                  uuid: state.response.data.id,
+                  number: state.response.data.noTransaction,
+                  total: state.response.data.total.toString(),
                 ));
-                // });
+                });
               }
             })
           ],
@@ -158,8 +163,8 @@ class _PaymentScreenState extends State<PaymentScreen> {
                   );
                 },
               ),
-              BlocBuilder<OrdersBloc, OrdersState>(builder: (context, state) {
-                if (state is OrdersLoading) {
+              BlocBuilder<NewOrdersBloc, NewOrdersState>(builder: (context, state) {
+                if (state is NewOrdersLoading) {
                   return LoaderWidget(title: "Membuat pesanan");
                 }
                 return const SizedBox.shrink();

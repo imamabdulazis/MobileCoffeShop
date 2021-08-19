@@ -153,16 +153,14 @@ class _CategoryScreenState extends State<CategoryScreen> {
                                       ),
                                     );
                                   },
-                                  child: SizedBox(
-                                    height: 200,
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Card(
-                                          margin: EdgeInsets.zero,
-                                          color: Colors.white,
-                                          child: Stack(
+                                  child: Card(
+                                    child: SizedBox(
+                                      height: 200,
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Stack(
                                             children: [
                                               SizedBox(
                                                 width: 150,
@@ -183,36 +181,47 @@ class _CategoryScreenState extends State<CategoryScreen> {
                                               ),
                                             ],
                                           ),
-                                        ),
-                                        const SizedBox(height: 10),
-                                        SizedBox(
-                                          width: itemWidth,
-                                          child: Text(
-                                            data[index].name,
-                                            maxLines: 2,
-                                            overflow: TextOverflow.ellipsis,
-                                            style: TextStyle(
-                                              fontSize: 12,
-                                              color: Colors.black,
-                                              fontWeight: FontWeight.w500,
+                                          Padding(
+                                            padding: const EdgeInsets.all(10),
+                                            child: Column(
+                                              children: [
+                                                const SizedBox(height: 3),
+                                                SizedBox(
+                                                  width: itemWidth,
+                                                  child: Text(
+                                                    data[index].name,
+                                                    maxLines: 2,
+                                                    overflow:
+                                                        TextOverflow.ellipsis,
+                                                    style: TextStyle(
+                                                      fontSize: 11,
+                                                      color: Colors.black,
+                                                      fontWeight:
+                                                          FontWeight.w500,
+                                                    ),
+                                                  ),
+                                                ),
+                                                const SizedBox(height: 4),
+                                                SizedBox(
+                                                  width: itemWidth,
+                                                  child: Text(
+                                                    "Rp ${f.format(int.parse(data[index].price))}",
+                                                    maxLines: 2,
+                                                    overflow:
+                                                        TextOverflow.ellipsis,
+                                                    style: TextStyle(
+                                                      fontSize: 14,
+                                                      color: Colors.teal,
+                                                      fontWeight:
+                                                          FontWeight.w700,
+                                                    ),
+                                                  ),
+                                                ),
+                                              ],
                                             ),
-                                          ),
-                                        ),
-                                        const SizedBox(height: 10),
-                                        SizedBox(
-                                          width: itemWidth,
-                                          child: Text(
-                                            "Rp ${f.format(int.parse(data[index].price))}",
-                                            maxLines: 2,
-                                            overflow: TextOverflow.ellipsis,
-                                            style: TextStyle(
-                                              fontSize: 14,
-                                              color: Colors.teal,
-                                              fontWeight: FontWeight.w700,
-                                            ),
-                                          ),
-                                        ),
-                                      ],
+                                          )
+                                        ],
+                                      ),
                                     ),
                                   ),
                                 ),

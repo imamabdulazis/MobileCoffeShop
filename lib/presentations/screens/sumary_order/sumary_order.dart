@@ -1,4 +1,5 @@
 import 'package:caffeshop/component/constants/share_preference.dart';
+import 'package:caffeshop/data/models/request/new_order_body.dart';
 import 'package:caffeshop/data/models/request/order_body.dart';
 import 'package:caffeshop/presentations/screens/payment/payment_screen.dart';
 import 'package:flutter/cupertino.dart';
@@ -9,21 +10,11 @@ import 'package:intl/intl.dart';
 var f = NumberFormat('#,##0.00', 'id_ID');
 
 class SumaryOrder extends StatefulWidget {
-  final String drinkId;
-  final String name;
-  final String imageUrl;
-  final int price;
-  final int qty;
-  final String categoryName;
+  final NewOrderBody body;
 
   const SumaryOrder({
     Key key,
-    @required this.drinkId,
-    @required this.name,
-    @required this.imageUrl,
-    @required this.price,
-    @required this.qty,
-    @required this.categoryName,
+    this.body,
   }) : super(key: key);
   @override
   _SumaryOrderState createState() => _SumaryOrderState();
@@ -31,7 +22,6 @@ class SumaryOrder extends StatefulWidget {
 
 class _SumaryOrderState extends State<SumaryOrder> {
   bool isLoading = true;
-  final prefs = SharedPreferencesManager();
 
   @override
   void initState() {
@@ -72,7 +62,7 @@ class _SumaryOrderState extends State<SumaryOrder> {
     return ListView(
       children: [
         Padding(
-          padding: const EdgeInsets.all(15.0),
+          padding: const EdgeInsets.all(15),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -85,69 +75,19 @@ class _SumaryOrderState extends State<SumaryOrder> {
                 ),
               ),
               const SizedBox(height: 15),
-              Container(
-                padding: const EdgeInsets.symmetric(vertical: 15),
-                decoration: BoxDecoration(
-                  border: Border.all(color: Colors.grey),
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: Row(
-                  children: [
-                    SizedBox(
-                        width: 80,
-                        height: 80,
-                        child: Image.network(
-                          widget.imageUrl,
-                          fit: BoxFit.contain,
-                        )),
-                    const SizedBox(width: 10),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            widget.name,
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              color: Colors.teal,
-                              fontSize: 14,
-                            ),
-                          ),
-                          Text(
-                            widget.categoryName,
-                            style: TextStyle(
-                              color: Colors.grey,
-                              fontSize: 12,
-                            ),
-                          ),
-                          Divider(),
-                          Padding(
-                            padding: const EdgeInsets.only(right: 15),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text(
-                                  "Rp ${f.format(widget.price)}",
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 14,
-                                  ),
-                                ),
-                                Text(
-                                  "Qty :${widget.qty}",
-                                  style: TextStyle(
-                                    fontSize: 14,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          )
-                        ],
+              Column(
+                children: widget.body.drinks
+                    .map(
+                      (e) => _buildDrink(
+                        name: e.name,
+                        cat: e.cat,
+                        image: e.image,
+                        price: int.parse(e.price),
+                        qty: e.quantity,
                       ),
                     )
-                  ],
-                ),
-              ),
+                    .toList(),
+              )
             ],
           ),
         ),
@@ -169,13 +109,8 @@ class _SumaryOrderState extends State<SumaryOrder> {
             ),
             const SizedBox(height: 15),
             _buildPembayarnLine(
-              title: "Total Belanja ${widget.qty} item",
-              price: "Rp ${f.format(widget.price * widget.qty)}",
-            ),
-            const SizedBox(height: 5),
-            _buildPembayarnLine(
-              title: "Harga Satuan",
-              price: "Rp ${f.format(widget.price)}",
+              title: "Total beli ${widget.body.drinks.length} item",
+              price: "Rp ${f.format(widget.body.total-4000)}",
             ),
             const SizedBox(height: 5),
             _buildPembayarnLine(
@@ -187,8 +122,9 @@ class _SumaryOrderState extends State<SumaryOrder> {
             const SizedBox(height: 5),
             _buildPembayarnLine(
               title: "Total Pembayaran",
-              price: "Rp ${f.format(widget.price * widget.qty + 4000)}",
+              price: "Rp ${f.format(widget.body.total)}",
             ),
+            const SizedBox(height: 90),
           ]),
         ),
       ],
@@ -223,7 +159,7 @@ class _SumaryOrderState extends State<SumaryOrder> {
       left: 0,
       right: 0,
       child: Container(
-        color: CupertinoColors.lightBackgroundGray,
+        color: CupertinoColors.extraLightBackgroundGray,
         child: Padding(
           padding: const EdgeInsets.symmetric(
             vertical: 10,
@@ -239,16 +175,16 @@ class _SumaryOrderState extends State<SumaryOrder> {
                     "Total pembayaran",
                     style: TextStyle(
                       fontSize: 14,
-                      color: Colors.grey,
+                      color: Colors.black,
                       fontWeight: FontWeight.w500,
                     ),
                   ),
                   const SizedBox(height: 5),
                   Text(
-                    "Rp ${f.format(widget.price * widget.qty + 4000)}",
+                    "Rp ${f.format(widget.body.total)}",
                     style: TextStyle(
                         fontSize: 16,
-                        color: Colors.black,
+                        color: Colors.teal,
                         fontWeight: FontWeight.bold),
                   ),
                 ],
@@ -256,17 +192,7 @@ class _SumaryOrderState extends State<SumaryOrder> {
               ElevatedButton(
                 onPressed: () {
                   Get.to(PaymentScreen(
-                    orderBody: OrderBody(
-                      amount: widget.qty,
-                      discount: 0,
-                      drinkId: widget.drinkId,
-                      orderStatus: "Pending",
-                      paymentMethodId: "-",
-                      total: widget.price * widget.qty + 4000,
-                      paymentStatus: "Pending",
-                      userId:
-                          prefs.getString(SharedPreferencesManager.keyIdUser),
-                    ),
+                    newOrderBody: widget.body,
                   ));
                 },
                 child: Text(
@@ -280,6 +206,79 @@ class _SumaryOrderState extends State<SumaryOrder> {
             ],
           ),
         ),
+      ),
+    );
+  }
+
+  Widget _buildDrink({
+    String name,
+    String image,
+    String cat,
+    int price,
+    int qty,
+  }) {
+    return Container(
+      padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 10),
+      margin: const EdgeInsets.only(bottom: 5),
+      decoration: BoxDecoration(
+        border: Border.all(color: Colors.grey),
+        borderRadius: BorderRadius.circular(10),
+      ),
+      child: Row(
+        children: [
+          SizedBox(
+              width: 60,
+              height: 60,
+              child: Image.network(
+                image,
+                fit: BoxFit.contain,
+              )),
+          const SizedBox(width: 15),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  name,
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    color: Colors.teal,
+                    fontSize: 14,
+                  ),
+                ),
+                Text(
+                  cat,
+                  style: TextStyle(
+                    color: Colors.grey,
+                    fontSize: 12,
+                  ),
+                ),
+                Divider(),
+                Padding(
+                  padding: const EdgeInsets.only(right: 15),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        "Rp ${f.format(price)}",
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 14,
+                        ),
+                      ),
+                      Text(
+                        "Qty $qty",
+                        style: TextStyle(
+                          fontSize: 14,
+                        ),
+                      ),
+                    ],
+                  ),
+                )
+              ],
+            ),
+          )
+        ],
       ),
     );
   }

@@ -7,6 +7,7 @@ part 'cart_model.g.dart';
 class CartModel {
   String message;
   int status;
+  String user;
   List<DataCart> data;
   @JsonKey(ignore: true)
   dynamic error;
@@ -28,12 +29,14 @@ class CartModel {
 @JsonSerializable(explicitToJson: true, fieldRename: FieldRename.snake)
 class DataCart {
   String id;
-  int amount;
+  String cartId;
+  int quantity;
+  DateTime updatedAt;
   DataDrinkDetail drink;
 
   DataCart({
     this.id,
-    this.amount,
+    this.quantity,
     this.drink,
   });
 

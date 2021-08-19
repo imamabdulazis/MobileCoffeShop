@@ -32,11 +32,10 @@ class DataOrderList {
   int amount;
   int discount;
   String paymentStatus;
-  String orderStatus;
+  String status;
   String deeplinkRedirect;
   String generateQrCode;
-  String getStatus;
-  DataDrinkOrder drink;
+  String getStatusOrder;
   OrderPaymentMethod paymentMethod;
   DateTime updatedAt;
 
@@ -47,11 +46,10 @@ class DataOrderList {
     this.amount,
     this.discount,
     this.paymentStatus,
-    this.orderStatus,
+    this.status,
     this.deeplinkRedirect,
     this.generateQrCode,
-    this.getStatus,
-    this.drink,
+    this.getStatusOrder,
   });
 
   factory DataOrderList.fromJson(Map<String, dynamic> json) =>

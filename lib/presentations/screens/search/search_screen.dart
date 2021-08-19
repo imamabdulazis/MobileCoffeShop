@@ -102,8 +102,7 @@ class _SearchScreenState extends State<SearchScreen> {
                               children: [
                                 SizedBox(
                                   width: 200,
-                                  child: Image.asset(
-                                      'assets/img/search.png',
+                                  child: Image.asset('assets/img/search.png',
                                       fit: BoxFit.cover),
                                 ),
                                 Text("Pencarian tidak ditemukan")
@@ -135,65 +134,62 @@ class _SearchScreenState extends State<SearchScreen> {
                                   },
                                   child: SizedBox(
                                     height: 200,
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Card(
-                                          margin: EdgeInsets.zero,
-                                          color: Colors.white,
-                                          child: Stack(
-                                            children: [
-                                              SizedBox(
-                                                width: 200,
-                                                height: 150,
-                                                child: Image.network(
-                                                  data[index].imageUrl,
-                                                  fit: BoxFit.cover,
+                                    child: Card(
+                                        margin: EdgeInsets.zero,
+                                        color: Colors.white,
+                                        child: Column(
+                                          children: [
+                                            Stack(
+                                              children: [
+                                                SizedBox(
+                                                  width: 200,
+                                                  height: 150,
+                                                  child: Image.network(
+                                                    data[index].imageUrl,
+                                                    fit: BoxFit.cover,
+                                                  ),
+                                                ),
+                                                Positioned(
+                                                  top: -2,
+                                                  right: -2,
+                                                  child: FavoritButton(
+                                                    onPress: () => addFavorite(
+                                                        data[index].id),
+                                                    size: 16,
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                            const SizedBox(height: 10),
+                                            SizedBox(
+                                              width: itemWidth,
+                                              child: Text(
+                                                data[index].name,
+                                                maxLines: 2,
+                                                overflow: TextOverflow.ellipsis,
+                                                style: TextStyle(
+                                                  fontSize: 12,
+                                                  color: Colors.black,
+                                                  fontWeight: FontWeight.w500,
                                                 ),
                                               ),
-                                              Positioned(
-                                                top: -2,
-                                                right: -2,
-                                                child: FavoritButton(
-                                                  onPress: () => addFavorite(
-                                                      data[index].id),
-                                                  size: 16,
+                                            ),
+                                            const SizedBox(height: 10),
+                                            SizedBox(
+                                              width: itemWidth,
+                                              child: Text(
+                                                "Rp ${f.format(int.parse(data[index].price))}",
+                                                maxLines: 2,
+                                                overflow: TextOverflow.ellipsis,
+                                                style: TextStyle(
+                                                  fontSize: 14,
+                                                  color: Colors.teal,
+                                                  fontWeight: FontWeight.w700,
                                                 ),
                                               ),
-                                            ],
-                                          ),
-                                        ),
-                                        const SizedBox(height: 10),
-                                        SizedBox(
-                                          width: itemWidth,
-                                          child: Text(
-                                            data[index].name,
-                                            maxLines: 2,
-                                            overflow: TextOverflow.ellipsis,
-                                            style: TextStyle(
-                                              fontSize: 12,
-                                              color: Colors.black,
-                                              fontWeight: FontWeight.w500,
                                             ),
-                                          ),
-                                        ),
-                                        const SizedBox(height: 10),
-                                        SizedBox(
-                                          width: itemWidth,
-                                          child: Text(
-                                            "Rp ${f.format(int.parse(data[index].price))}",
-                                            maxLines: 2,
-                                            overflow: TextOverflow.ellipsis,
-                                            style: TextStyle(
-                                              fontSize: 14,
-                                              color: Colors.teal,
-                                              fontWeight: FontWeight.w700,
-                                            ),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
+                                          ],
+                                        )),
                                   ),
                                 ),
                               );

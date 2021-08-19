@@ -33,13 +33,10 @@ DataOrderList _$DataOrderListFromJson(Map<String, dynamic> json) {
     amount: json['amount'] as int,
     discount: json['discount'] as int,
     paymentStatus: json['payment_status'] as String,
-    orderStatus: json['order_status'] as String,
+    status: json['status'] as String,
     deeplinkRedirect: json['deeplink_redirect'] as String,
     generateQrCode: json['generate_qr_code'] as String,
-    getStatus: json['get_status'] as String,
-    drink: json['drink'] == null
-        ? null
-        : DataDrinkOrder.fromJson(json['drink'] as Map<String, dynamic>),
+    getStatusOrder: json['get_status_order'] as String,
   )
     ..paymentMethod = json['payment_method'] == null
         ? null
@@ -58,11 +55,10 @@ Map<String, dynamic> _$DataOrderListToJson(DataOrderList instance) =>
       'amount': instance.amount,
       'discount': instance.discount,
       'payment_status': instance.paymentStatus,
-      'order_status': instance.orderStatus,
+      'status': instance.status,
       'deeplink_redirect': instance.deeplinkRedirect,
       'generate_qr_code': instance.generateQrCode,
-      'get_status': instance.getStatus,
-      'drink': instance.drink?.toJson(),
+      'get_status_order': instance.getStatusOrder,
       'payment_method': instance.paymentMethod?.toJson(),
       'updated_at': instance.updatedAt?.toIso8601String(),
     };
