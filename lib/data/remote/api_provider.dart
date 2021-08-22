@@ -35,8 +35,8 @@ class ApiProvider {
 
   ApiProvider() {
     BaseOptions options = BaseOptions(
-      // baseUrl: 'https://copsychus.vercel.app',
-      baseUrl: 'http://10.0.2.2:3000',
+      baseUrl: 'https://copsychus.vercel.app',
+      // baseUrl: 'http://10.0.2.2:3000',
       connectTimeout: 15000,
       receiveTimeout: 15000,
       receiveDataWhenStatusError: true,
