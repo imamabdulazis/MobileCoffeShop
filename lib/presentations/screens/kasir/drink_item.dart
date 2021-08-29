@@ -7,12 +7,14 @@ class DrinkItem extends StatefulWidget {
   final String name;
   final String price;
   final String imageUrl;
+  final int stock;
   final Function() onPress;
   const DrinkItem({
     Key key,
     this.name,
     this.price,
     this.imageUrl,
+    this.stock,
     this.onPress,
   }) : super(key: key);
 
@@ -44,7 +46,7 @@ class _DrinkItemState extends State<DrinkItem> {
                   children: [
                     SizedBox(
                       width: 150,
-                      height: 100,
+                      height: 90,
                       child: Image.network(
                         widget.imageUrl,
                         fit: BoxFit.cover,
@@ -56,7 +58,7 @@ class _DrinkItemState extends State<DrinkItem> {
                   padding: const EdgeInsets.all(10),
                   child: Column(
                     children: [
-                      const SizedBox(height: 3),
+                      const SizedBox(height: 2),
                       SizedBox(
                         width: itemWidth,
                         child: Text(
@@ -70,7 +72,7 @@ class _DrinkItemState extends State<DrinkItem> {
                           ),
                         ),
                       ),
-                      const SizedBox(height: 4),
+                      const SizedBox(height: 2),
                       SizedBox(
                         width: itemWidth,
                         child: Text(
@@ -78,8 +80,21 @@ class _DrinkItemState extends State<DrinkItem> {
                           maxLines: 2,
                           overflow: TextOverflow.ellipsis,
                           style: TextStyle(
-                            fontSize: 14,
+                            fontSize: 12,
                             color: Colors.teal,
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
+                      ),
+                      SizedBox(
+                        width: itemWidth,
+                        child: Text(
+                          "stok: ${widget.stock}",
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(
+                            fontSize: 12,
+                            color: Colors.grey,
                             fontWeight: FontWeight.w700,
                           ),
                         ),

@@ -2,7 +2,9 @@ import 'dart:async';
 
 import 'package:bloc/bloc.dart';
 import 'package:caffeshop/data/models/request/order_kasir_body.dart';
+import 'package:caffeshop/data/models/response/default_model.dart';
 import 'package:caffeshop/data/models/response/detail_order_model.dart';
+import 'package:caffeshop/data/models/response/order_model.dart';
 import 'package:caffeshop/data/remote/api_provider.dart';
 import 'package:meta/meta.dart';
 
@@ -28,8 +30,14 @@ class OrderKasirBloc extends Bloc<OrderKasirEvent, OrderKasirState> {
         yield OrderKasirFailure(result.error);
         return;
       } else {
-        yield OrderKasirSuccess(result);
-        return;
+        DetailOrderModel detail = await apiProvider.detailorder(result.data.id);
+        if (detail.error != null) {
+          yield OrderKasirFailure(result.error);
+          return;
+        } else {
+          yield OrderKasirSuccess(detail);
+          return;
+        }
       }
     }
   }

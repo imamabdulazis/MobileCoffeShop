@@ -27,6 +27,7 @@ class _DrawerCasierState extends State<DrawerCasier> {
   @override
   Widget build(BuildContext context) {
     return Container(
+      color: CupertinoColors.extraLightBackgroundGray,
       width: Get.width / 3,
       child: Column(
         children: [
@@ -35,20 +36,26 @@ class _DrawerCasierState extends State<DrawerCasier> {
               itemCount: widget.drinks?.length,
               itemBuilder: (context, index) {
                 return Card(
-                  color: CupertinoColors.extraLightBackgroundGray,
                   child: ListTile(
                     onTap: () => widget.onDelete(widget.drinks[index].id),
                     title: Text(
                       "Caramel capucino",
                       style: TextStyle(
                         fontWeight: FontWeight.w700,
-                        color: Colors.teal,
+                        color: Colors.black,
                       ),
                     ),
                     subtitle: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text(widget.drinks[index].quantity.toString()),
+                        Text(
+                          "${widget.drinks[index].quantity} x",
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black,
+                            fontSize: 15,
+                          ),
+                        ),
                         Text(
                           "Rp ${f.format(int.parse(widget.drinks[index].price))}",
                           style: TextStyle(

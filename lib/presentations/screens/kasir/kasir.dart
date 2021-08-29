@@ -7,6 +7,7 @@ import 'package:caffeshop/presentations/blocs/kasir/order_kasir_bloc.dart';
 import 'package:caffeshop/presentations/screens/kasir/drawer_kasir.dart';
 import 'package:caffeshop/presentations/screens/kasir/drink_item.dart';
 import 'package:caffeshop/presentations/screens/kasir/receipt.dart';
+import 'package:caffeshop/presentations/screens/login/login_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -112,130 +113,173 @@ class _KasirState extends State<Kasir> {
 
     /*24 is for notification bar on Android*/
     final double itemHeight = (size.height - kToolbarHeight - 24) / 1.6;
-    final double itemWidth = size.width / 5;
+    final double itemWidth = size.width / 6;
     return BlocProvider(
       create: (context) => orderKasirBloc,
-      child: Scaffold(
-        drawer: Drawer(
-          child: Column(
-            children: [
-              Expanded(
-                child: ElevatedButton(
-                  onPressed: () {},
-                  child: Text("LOGOUT"),
-                ),
-              )
-            ],
+      child: RefreshIndicator(
+        onRefresh: () => Future.sync(() => getAllDrinkBloc.fetchAllDrink()),
+        child: Scaffold(
+          appBar: AppBar(
+            title: Text("Pilih Minuman"),
+            leading: IconButton(
+              icon: Icon(Icons.logout),
+              onPressed: () => showAlertDialog(context),
+            ),
           ),
-        ),
-        body: BlocListener<OrderKasirBloc, OrderKasirState>(
-          listener: (context, state) {
-            if (state is OrderKasirFailure) {
-              Get.snackbar(
-                'Gagal',
-                state.message,
-                snackPosition: SnackPosition.BOTTOM,
-                backgroundColor: Colors.red,
-                colorText: Colors.white,
-              );
-            } else if (state is OrderKasirSuccess) {
-              Get.dialog(
-                Dialog(
-                  child: Receipt(detail: state.response,),
-                ),
-              );
-            }
-          },
-          child: Stack(
-            children: [
-              Row(
-                children: [
-                  Expanded(
-                    child: Column(
-                      children: [
-                        const SizedBox(height: 15),
-                        StreamBuilder<DrinkModel>(
-                          stream: getAllDrinkBloc.subject.stream,
-                          builder: (context, snapshot) {
-                            if (snapshot.hasData) {
-                              var data = snapshot.data.data;
-                              if (snapshot.data.data == null ||
-                                  snapshot.data.error != null) {
-                                return Center(
-                                    child: Text("Terjadi kesalahan server"));
-                              } else if (data.length <= 0) {
-                                return Expanded(
-                                  child: Center(
-                                      child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      SizedBox(
-                                        width: 200,
-                                        child: Image.asset('assets/img/cup.png',
-                                            fit: BoxFit.cover),
-                                      ),
-                                      Text("Minuman belum tersedia"),
-                                      SizedBox(height: 150),
-                                    ],
-                                  )),
-                                );
-                              }
-                              return Flexible(
-                                child: GridView.builder(
-                                  gridDelegate:
-                                      SliverGridDelegateWithFixedCrossAxisCount(
-                                    crossAxisCount: 3,
-                                    mainAxisSpacing: 20,
-                                    crossAxisSpacing: 10,
-                                    childAspectRatio: (itemWidth / itemHeight),
-                                  ),
-                                  itemCount: data.length,
-                                  padding: const EdgeInsets.only(
-                                      bottom: 50, top: 15),
-                                  itemBuilder:
-                                      (BuildContext context, int index) {
-                                    return DrinkItem(
-                                      onPress: () => onAddDrink(data[index]),
-                                      imageUrl: data[index].imageUrl,
-                                      name: data[index].name,
-                                      price: data[index].price,
-                                    );
-                                  },
-                                ),
-                              );
-                            }
-                            return Expanded(
-                              child: Center(
-                                child: CircularProgressIndicator(),
-                              ),
-                            );
-                          },
-                        ),
-                      ],
+          body: BlocListener<OrderKasirBloc, OrderKasirState>(
+            listener: (context, state) {
+              if (state is OrderKasirFailure) {
+                Get.snackbar(
+                  'Gagal',
+                  state.message,
+                  snackPosition: SnackPosition.BOTTOM,
+                  backgroundColor: Colors.red,
+                  colorText: Colors.white,
+                );
+              } else if (state is OrderKasirSuccess) {
+                total = 0;
+                temDrink.value = List.of(temDrink.value)..clear();
+                Get.dialog(
+                  Dialog(
+                    child: Receipt(
+                      detail: state.response,
                     ),
                   ),
-                  ValueListenableBuilder(
-                    valueListenable: temDrink,
-                    builder: (context, _, __) => DrawerCasier(
-                      onDelete: (String id) => onDeleteItem(id),
-                      drinks: temDrink.value,
-                      total: total,
-                      onCheckout: onCheckout,
+                );
+              }
+            },
+            child: Stack(
+              children: [
+                Row(
+                  children: [
+                    Expanded(
+                      child: Column(
+                        children: [
+                          const SizedBox(height: 15),
+                          StreamBuilder<DrinkModel>(
+                            stream: getAllDrinkBloc.subject.stream,
+                            builder: (context, snapshot) {
+                              if (snapshot.hasData) {
+                                var data = snapshot.data.data;
+                                if (snapshot.data.data == null ||
+                                    snapshot.data.error != null) {
+                                  return Center(
+                                      child: Text("Terjadi kesalahan server"));
+                                } else if (data.length <= 0) {
+                                  return Expanded(
+                                    child: Center(
+                                        child: Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        SizedBox(
+                                          width: 200,
+                                          child: Image.asset(
+                                              'assets/img/cup.png',
+                                              fit: BoxFit.cover),
+                                        ),
+                                        Text("Minuman belum tersedia"),
+                                        SizedBox(height: 150),
+                                      ],
+                                    )),
+                                  );
+                                }
+                                return Flexible(
+                                  child: GridView.builder(
+                                    gridDelegate:
+                                        SliverGridDelegateWithFixedCrossAxisCount(
+                                      crossAxisCount: 4,
+                                      mainAxisSpacing: 20,
+                                      crossAxisSpacing: 10,
+                                      childAspectRatio:
+                                          (itemWidth / itemHeight),
+                                    ),
+                                    itemCount: data.length,
+                                    padding: const EdgeInsets.only(
+                                        bottom: 50, top: 15),
+                                    itemBuilder:
+                                        (BuildContext context, int index) {
+                                      return DrinkItem(
+                                        onPress: () => onAddDrink(data[index]),
+                                        imageUrl: data[index].imageUrl,
+                                        name: data[index].name,
+                                        price: data[index].price,
+                                        stock: data[index].stock,
+                                      );
+                                    },
+                                  ),
+                                );
+                              }
+                              return Expanded(
+                                child: Center(
+                                  child: CircularProgressIndicator(),
+                                ),
+                              );
+                            },
+                          ),
+                        ],
+                      ),
                     ),
-                  )
-                ],
-              ),
-              BlocBuilder<OrderKasirBloc, OrderKasirState>(
-                  builder: (context, state) {
-                if (state is OrderKasirLoading) {
-                  return LoaderWidget(title: "Loading...");
-                }
-                return const SizedBox.shrink();
-              }),
-            ],
+                    ValueListenableBuilder(
+                      valueListenable: temDrink,
+                      builder: (context, _, __) => DrawerCasier(
+                        onDelete: (String id) => onDeleteItem(id),
+                        drinks: temDrink.value,
+                        total: total,
+                        onCheckout: onCheckout,
+                      ),
+                    )
+                  ],
+                ),
+                BlocBuilder<OrderKasirBloc, OrderKasirState>(
+                    builder: (context, state) {
+                  if (state is OrderKasirLoading) {
+                    return LoaderWidget(title: "Loading...");
+                  }
+                  return const SizedBox.shrink();
+                }),
+              ],
+            ),
           ),
         ),
       ),
+    );
+  }
+
+  showAlertDialog(BuildContext context) {
+    Widget cancelButton = TextButton(
+      child: Text("BATAL"),
+      onPressed: () {
+        Navigator.of(context).pop();
+      },
+    );
+
+    Widget logoutButton = TextButton(
+      child: Text("LOGOUT", style: TextStyle(color: Colors.red)),
+      onPressed: () {
+        Navigator.of(context).pop();
+        Future.delayed(Duration(milliseconds: 700), () {
+          prefs.clearAll();
+          Get.offAll(LoginScreen());
+        });
+      },
+    );
+
+    // Create AlertDialog
+    AlertDialog alert = AlertDialog(
+      title: Text("Logout Aplikasi"),
+      content: Text("Apakah anda akan logout aplikasi sekarang?"),
+      actions: [
+        cancelButton,
+        logoutButton,
+      ],
+    );
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return alert;
+      },
     );
   }
 }
