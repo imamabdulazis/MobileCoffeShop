@@ -226,7 +226,7 @@ class _KasirState extends State<Kasir> {
                         onDelete: (String id) => onDeleteItem(id),
                         drinks: temDrink.value,
                         total: total,
-                        onCheckout: onCheckout,
+                        onCheckout: temDrink.value.isEmpty ? null : onCheckout,
                       ),
                     )
                   ],

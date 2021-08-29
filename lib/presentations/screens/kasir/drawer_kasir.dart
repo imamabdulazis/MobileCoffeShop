@@ -73,6 +73,10 @@ class _DrawerCasierState extends State<DrawerCasier> {
           Divider(),
           ElevatedButton(
               onPressed: widget.onCheckout,
+              style: ButtonStyle(
+                backgroundColor: MaterialStateProperty.all(
+                    widget.onCheckout != null ? Colors.teal : Colors.grey),
+              ),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [

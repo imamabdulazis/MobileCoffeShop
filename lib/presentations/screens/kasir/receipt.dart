@@ -32,7 +32,7 @@ class Receipt extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 8.0),
             child: Text(
-              "Jl. Veteran No.38-28, Muja Muju, Kec. Umbulharjo, Kota Yogyakarta",
+              "Jl. Veteran No.38-28, Muja Muju, Kec. Umbulharjo, Kota Yogyakarta.",
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontWeight: FontWeight.w400,
@@ -132,7 +132,7 @@ class Receipt extends StatelessWidget {
                   style: TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 12,
-                      color: Colors.teal),
+                      color: Colors.black),
                 ),
               ],
             ),
