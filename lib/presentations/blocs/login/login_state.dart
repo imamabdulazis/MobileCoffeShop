@@ -15,6 +15,8 @@ class LoginFailure extends LoginState {
 
 class LoginSuccess extends LoginState {}
 
+class LoginSuccessCashier extends LoginState {}
+
 class LoginException extends LoginState {
   final String title;
 

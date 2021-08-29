@@ -33,11 +33,18 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
         if (result.error != null) {
           yield LoginFailure(result.error);
           return;
+        } else if (result.previlage == "kasir") {
+          prefs.putString(
+              SharedPreferencesManager.keyAccessToken, result.token);
+          prefs.putString(SharedPreferencesManager.keyIdUser, result.userId);
+          prefs.putString(
+              SharedPreferencesManager.keyAccessKasir, result.previlage);
+          yield LoginSuccessCashier();
+          return;
         } else {
           prefs.putString(
               SharedPreferencesManager.keyAccessToken, result.token);
-          prefs.putString(
-              SharedPreferencesManager.keyIdUser, result.userId);
+          prefs.putString(SharedPreferencesManager.keyIdUser, result.userId);
           yield LoginSuccess();
           return;
         }

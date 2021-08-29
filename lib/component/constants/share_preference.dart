@@ -6,6 +6,7 @@ class SharedPreferencesManager {
 
   //? save data
   static const String keyAccessToken = 'accessToken';
+  static const String keyAccessKasir = 'keyAccessKasir';
   static const String keyIdUser = "idUser";
   static const String keyFirebaseCoffeShop = "keyFirebase";
 

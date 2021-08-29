@@ -2,6 +2,7 @@ import 'package:caffeshop/component/constants/share_preference.dart';
 import 'package:caffeshop/component/utils/injector.dart';
 import 'package:caffeshop/component/utils/notification.dart';
 import 'package:caffeshop/data/utils/dynamic_link.dart';
+import 'package:caffeshop/presentations/screens/kasir/kasir.dart';
 import 'package:caffeshop/presentations/screens/login/login_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -29,6 +30,8 @@ class _AppState extends State<App> {
   Widget build(BuildContext context) {
     final isLogin = prefs.isKeyExists(SharedPreferencesManager.keyAccessToken);
 
+    final isKasir = prefs.isKeyExists(SharedPreferencesManager.keyAccessKasir);
+
     return GetMaterialApp(
       title: 'CaffeShop',
       debugShowCheckedModeBanner: false,
@@ -42,7 +45,11 @@ class _AppState extends State<App> {
           page: () => DrawerNavigation(),
         ),
       ],
-      home: isLogin ? DrawerNavigation() : LoginScreen(),
+      home: isKasir
+          ? Kasir()
+          : isLogin
+              ? DrawerNavigation()
+              : LoginScreen(),
     );
   }
 }

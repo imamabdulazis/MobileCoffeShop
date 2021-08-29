@@ -6,6 +6,7 @@ import 'package:caffeshop/data/models/request/favorite_body.dart';
 import 'package:caffeshop/data/models/request/gopay_body.dart';
 import 'package:caffeshop/data/models/request/new_order_body.dart';
 import 'package:caffeshop/data/models/request/order_body.dart';
+import 'package:caffeshop/data/models/request/order_kasir_body.dart';
 import 'package:caffeshop/data/models/request/register_body.dart';
 import 'package:caffeshop/data/models/request/update_cart_body.dart';
 import 'package:caffeshop/data/models/response/account_model.dart';
@@ -401,6 +402,33 @@ class ApiProvider {
         NetworkExceptions.getErrorMessage(
           NetworkExceptions.getDioException(e),
         ),
+      );
+    }
+  }
+
+  Future<DrinkModel> getAllDrink() async {
+    try {
+      final Response response = await dio.get('/api/v1/drink',
+          options: Options(headers: {'isToken': true}));
+      return DrinkModel.fromJson(response.data);
+    } catch (e) {
+      return DrinkModel.withError(
+        NetworkExceptions.getErrorMessage(NetworkExceptions.getDioException(e)),
+      );
+    }
+  }
+
+  Future<DetailOrderModel> orderKasir(OrderKasirBody body) async {
+    try {
+      final Response response = await dio.post(
+        '/api/v1/new_orders/kasir',
+        data: body.toJson(),
+        options: Options(headers: {'isToken': true}),
+      );
+      return DetailOrderModel.fromJson(response.data);
+    } catch (e) {
+      return DetailOrderModel.withError(
+        NetworkExceptions.getErrorMessage(NetworkExceptions.getDioException(e)),
       );
     }
   }

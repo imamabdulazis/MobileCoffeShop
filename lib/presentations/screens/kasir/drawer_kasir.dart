@@ -1,0 +1,86 @@
+import 'package:caffeshop/data/models/request/order_kasir_body.dart';
+import 'package:caffeshop/data/models/response/drink_model.dart';
+import 'package:caffeshop/presentations/screens/kasir/kasir.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+
+class DrawerCasier extends StatefulWidget {
+  const DrawerCasier({
+    Key key,
+    this.drinks,
+    this.total,
+    this.onDelete,
+    this.onCheckout,
+  }) : super(key: key);
+  final List<DrinkItemModel> drinks;
+  final int total;
+  final Function(String id) onDelete;
+  final Function() onCheckout;
+
+  @override
+  _DrawerCasierState createState() => _DrawerCasierState();
+}
+
+class _DrawerCasierState extends State<DrawerCasier> {
+  var tempDrink = [];
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: Get.width / 3,
+      child: Column(
+        children: [
+          Expanded(
+            child: ListView.builder(
+              itemCount: widget.drinks?.length,
+              itemBuilder: (context, index) {
+                return Card(
+                  color: CupertinoColors.extraLightBackgroundGray,
+                  child: ListTile(
+                    onTap: () => widget.onDelete(widget.drinks[index].id),
+                    title: Text(
+                      "Caramel capucino",
+                      style: TextStyle(
+                        fontWeight: FontWeight.w700,
+                        color: Colors.teal,
+                      ),
+                    ),
+                    subtitle: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(widget.drinks[index].quantity.toString()),
+                        Text(
+                          "Rp ${f.format(int.parse(widget.drinks[index].price))}",
+                          style: TextStyle(
+                            fontWeight: FontWeight.w700,
+                            color: Colors.teal,
+                          ),
+                        )
+                      ],
+                    ),
+                  ),
+                );
+              },
+            ),
+          ),
+          Divider(),
+          ElevatedButton(
+              onPressed: widget.onCheckout,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text("Checkout"),
+                  Text(
+                    "Rp ${f.format(widget.total)}",
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                    ),
+                  )
+                ],
+              ))
+        ],
+      ),
+    );
+  }
+}

@@ -5,6 +5,7 @@ import 'package:caffeshop/presentations/screens/cart/cart_screen.dart';
 import 'package:caffeshop/presentations/screens/search/search_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:vertical_tabs/vertical_tabs.dart';
 
@@ -37,6 +38,10 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+      DeviceOrientation.portraitDown,
+    ]);
     return Scaffold(
       appBar: _buildHeader(),
       body: Padding(

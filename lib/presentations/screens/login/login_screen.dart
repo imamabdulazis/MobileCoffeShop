@@ -4,10 +4,12 @@ import 'package:caffeshop/component/widget/loader/loader_widget.dart';
 import 'package:caffeshop/data/models/request/login_body.dart';
 import 'package:caffeshop/presentations/blocs/login/login_bloc.dart';
 import 'package:caffeshop/presentations/screens/drawer/drawer_navigation.dart';
+import 'package:caffeshop/presentations/screens/kasir/kasir.dart';
 import 'package:caffeshop/presentations/screens/payment/payment_screen.dart';
 import 'package:caffeshop/presentations/screens/register/register_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_feather_icons/flutter_feather_icons.dart';
 import 'package:get/get.dart';
@@ -47,6 +49,10 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext conRtext) {
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+      DeviceOrientation.portraitDown,
+    ]);
     return BlocProvider(
       create: (context) => loginBloc,
       child: BlocListener<LoginBloc, LoginState>(
@@ -70,6 +76,8 @@ class _LoginScreenState extends State<LoginScreen> {
               backgroundColor: Colors.red,
               colorText: Colors.white,
             );
+          } else if (state is LoginSuccessCashier) {
+            Get.to(Kasir());
           } else if (state is LoginSuccess) {
             Get.to(DrawerNavigation());
           }
