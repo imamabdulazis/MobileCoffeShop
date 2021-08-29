@@ -34,30 +34,55 @@ class Receipt extends StatelessWidget {
               fontSize: 10,
             ),
           ),
-          _divider(),
-          ListTile(
-              title: Text("Tanggal"),
-              trailing:
-                  Text(DateFormat("dd, MMM yyyy").format(DateTime.now()))),
-          _divider(),
+          const SizedBox(height: 3),
+          Divider(),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text("Tanggal"),
+                Text(DateFormat("dd, MMM yyyy").format(DateTime.now())),
+              ],
+            ),
+          ),
+          Divider(),
           Expanded(
             child: ListView.builder(
               itemCount: detail?.data?.orderItems?.length,
-              itemBuilder: (context, index) => ListTile(
-                title: Text(
-                    "${detail.data.orderItems[index].quantity}x ${detail.data.orderItems[index].drink.name}"),
-                trailing: Text("${detail.data.orderItems[index].drink.price}"),
+              itemBuilder: (context, index) => Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                        "${detail.data.orderItems[index].quantity}x ${detail.data.orderItems[index].drink.name}"),
+                    Text("Rp ${f.format(detail.data.orderItems[index].drink.price)}",),
+                  ],
+                ),
               ),
             ),
           ),
-          _divider(),
-          ListTile(
-            title: Text("Total Bayar"),
-            trailing: Text(
-              "Rp ${f.format(detail.data.total)}",
+          Divider(),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  "Total Bayarr",
+                  style: TextStyle(
+                    fontWeight: FontWeight.w600,
+                    fontSize: 15,
+                  ),
+                ),
+                Text(
+                  "Rp ${f.format(detail.data.total)}",
+                ),
+              ],
             ),
           ),
-          _divider(),
+          Divider(),
           Text(
             "Thank You",
             textAlign: TextAlign.center,
@@ -79,6 +104,7 @@ class Receipt extends StatelessWidget {
                 child: Container(
                   color: index % 2 == 0 ? Colors.transparent : Colors.grey,
                   height: 2,
+                  width: 1,
                 ),
               )),
     );
